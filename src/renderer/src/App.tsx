@@ -1,34 +1,16 @@
 import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import StatusLane from './components/StatusLane'
+
+const STATUSES = ['Plan', 'Todo', 'In Progress', 'In Review', 'Done'] as const
 
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
   return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
+    <div className="flex h-screen w-screen gap-3 overflow-hidden p-4 pb-28">
+      {STATUSES.map((status) => (
+        <StatusLane key={status} status={status} className="min-w-0 flex-1" />
+      ))}
       <Versions></Versions>
-    </>
+    </div>
   )
 }
 
