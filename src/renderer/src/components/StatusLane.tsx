@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import { Badge } from './ui/badge'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from './ui/card'
+import TaskCard from './TaskCard'
 
 interface StatusLaneProps {
   status: string
@@ -17,7 +18,7 @@ export default function StatusLane({ status, className }: StatusLaneProps) {
         </CardAction>
       </CardHeader>
       <CardContent className="min-h-0 flex-1 overflow-y-auto">
-        <div>aaaa</div>
+        <TaskCard title="test" />
       </CardContent>
     </Card>
   )
