@@ -8,7 +8,7 @@ interface StatusLaneProps {
   className?: string
 }
 
-export default function StatusLane({ status, className }: StatusLaneProps) {
+export default function StatusLane({ status, className }: StatusLaneProps): React.JSX.Element {
   return (
     <Card size="sm" className={cn('h-full min-h-0', className)}>
       <CardHeader>

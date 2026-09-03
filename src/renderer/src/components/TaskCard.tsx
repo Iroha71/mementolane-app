@@ -7,7 +7,7 @@ interface TaskCardProps {
   detail?: string
 }
 
-export default function TaskCard(props: TaskCardProps) {
+export default function TaskCard(props: TaskCardProps): React.JSX.Element {
   return (
     <Card>
       <CardHeader>{props.title}</CardHeader>
