@@ -1,10 +1,11 @@
+import { Task } from '@shared/task'
 import { Card, CardHeader } from './ui/card'
 
 interface TaskCardProps {
-  title: string
-  startAt?: string
-  dueAt?: string
-  detail?: string
+  title: Task['title']
+  startAt?: Task['startAt']
+  dueAt?: Task['dueAt']
+  detail?: Task['detail']
 }
 
 export default function TaskCard(props: TaskCardProps): React.JSX.Element {
