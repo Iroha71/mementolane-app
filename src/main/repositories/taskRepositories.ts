@@ -1,8 +1,9 @@
 import { ne } from 'drizzle-orm'
 import { db } from '../db'
-import { tasks } from '../db/schema'
+import { tasks } from '../../shared/schema'
+import { TaskOutput } from '../../shared/task'
 
-export async function getActive() {
+export async function getActive(): Promise<TaskOutput[]> {
   try {
     const result = await db.select().from(tasks).where(ne(tasks.status, 'done'))
 
@@ -11,5 +12,5 @@ export async function getActive() {
     console.log(err)
   }
 
-  return {}
+  return []
 }
