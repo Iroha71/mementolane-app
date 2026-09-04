@@ -1,4 +1,5 @@
 import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
@@ -33,14 +34,34 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+const cardTitleVariants = cva(
+  "text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
+  {
+    variants: {
+      variant: {
+        default: "",
+        plan: "text-status-plan",
+        thisweek: "text-status-thisweek",
+        wip: "text-status-wip",
+        inreview: "text-status-inreview",
+        inspection: "text-status-inspection",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+function CardTitle({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof cardTitleVariants>) {
   return (
     <div
       data-slot="card-title"
-      className={cn(
-        "text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
-        className
-      )}
+      className={cn(cardTitleVariants({ variant }), className)}
       {...props}
     />
   )
@@ -97,6 +118,7 @@ export {
   CardHeader,
   CardFooter,
   CardTitle,
+  cardTitleVariants,
   CardAction,
   CardDescription,
   CardContent,

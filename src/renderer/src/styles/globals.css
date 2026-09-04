@@ -29,6 +29,11 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-status-plan: var(--status-plan);
+  --color-status-thisweek: var(--status-thisweek);
+  --color-status-wip: var(--status-wip);
+  --color-status-inreview: var(--status-inreview);
+  --color-status-inspection: var(--status-inspection);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -54,7 +59,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.78 0.13 182);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -71,6 +76,11 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+  --status-plan: oklch(0.55 0.01 286);
+  --status-thisweek: oklch(0.71 0.17 22);
+  --status-wip: oklch(0.76 0.16 56);
+  --status-inreview: oklch(0.71 0.14 255);
+  --status-inspection: oklch(0.77 0.15 163);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -120,6 +130,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply overflow-hidden bg-background text-foreground select-none;
+  }
+  #root {
+    @apply flex h-screen w-screen;
   }
 }
