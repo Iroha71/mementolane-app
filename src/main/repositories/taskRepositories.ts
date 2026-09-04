@@ -9,7 +9,7 @@ export async function getActive(): Promise<TaskOutput[]> {
 
     return result
   } catch (err) {
-    console.log(err)
+    console.error('DB Access Error ' + err)
   }
 
   return []
