@@ -5,3 +5,7 @@ out
 .eslintcache
 *.log*
 .npmrc
+.env
+*.db
+*.db-wal
+*.db-shm

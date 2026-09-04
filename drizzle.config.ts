@@ -16,11 +16,11 @@ function userDataDir(): string {
   }
 }
 
-const dbPath = process.env.DB_PATH ?? join(userDataDir(), 'mementolane.db')
+const dbPath = process.env.MAIN_VITE_DB_PATH ?? join(userDataDir(), 'mementolane.db')
 
 export default defineConfig({
   dialect: 'sqlite',
-  schema: './src/main/db/schema.ts',
+  schema: './src/shared/schema.ts',
   out: './drizzle',
   dbCredentials: {
     url: dbPath
