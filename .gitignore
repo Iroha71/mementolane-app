@@ -9,3 +9,4 @@ out
 *.db
 *.db-wal
 *.db-shm
+*.tsbuildinfo
