@@ -1,8 +1,11 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
+import { TaskOutput } from '@shared/task'
 
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: unknown
+    api: {
+      readActiveTasks: () => Promise<TaskOutput[]>
+    }
   }
 }
