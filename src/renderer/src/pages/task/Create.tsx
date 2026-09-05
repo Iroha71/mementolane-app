@@ -21,22 +21,20 @@ import {
 } from '@renderer/components/ui/select'
 import { Textarea } from '@renderer/components/ui/textarea'
 import React from 'react'
-import { Link } from 'react-router-dom'
-
-interface CreateProps {
-  status?: string
-}
+import { Link, useSearchParams } from 'react-router-dom'
 
 const statusItems = [
-  { label: '状態を選択', value: null },
-  { label: '予定', value: '予定' },
-  { label: '今週やること', value: '今週やること' },
-  { label: '作業中', value: '作業中' },
-  { label: 'レビュー中', value: 'レビュー中' },
-  { label: '検収中', value: '検収中' }
+  { label: '予定', value: 'plan' },
+  { label: '今週やること', value: 'thisweek' },
+  { label: '作業中', value: 'wip' },
+  { label: 'レビュー中', value: 'inreview' },
+  { label: '検収中', value: 'inspection' }
 ]
 
-export default function Create({ status }: CreateProps): React.JSX.Element {
+export default function Create(): React.JSX.Element {
+  const [searchParams] = useSearchParams()
+  const status = searchParams.get('status') ?? undefined
+
   return (
     <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-3 p-4">
       <Card style={{ width: '30rem' }}>
