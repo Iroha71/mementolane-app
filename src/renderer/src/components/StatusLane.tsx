@@ -5,6 +5,9 @@ import TaskCard from './TaskCard'
 import { TaskOutput } from '@shared/task'
 import React from 'react'
 import { type VariantProps } from 'class-variance-authority'
+import { Button } from './ui/button'
+import { Plus, SquareArrowDown } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 type StatusVariant = NonNullable<VariantProps<typeof cardTitleVariants>['variant']>
 
@@ -22,6 +25,7 @@ export default function StatusLane({
   tasks,
   icon
 }: StatusLaneProps): React.JSX.Element {
+  const navigate = useNavigate()
   const laneTasks = tasks.filter((task) => task.status === status)
 
   return (
@@ -45,6 +49,10 @@ export default function StatusLane({
             detail={task.detail}
           />
         ))}
+        <Button variant={'outline'} onClick={() => navigate('/task/create')}>
+          <Plus />
+          タスクを追加する
+        </Button>
       </CardContent>
     </Card>
   )

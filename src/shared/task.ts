@@ -1,13 +1,6 @@
 import { z } from 'zod'
 
-export const TASK_STATUSES = [
-  'plan',
-  'thisweek',
-  'wip',
-  'inreview',
-  'inspection',
-  'done'
-] as const
+export const TASK_STATUSES = ['plan', 'thisweek', 'wip', 'inreview', 'inspection', 'done'] as const
 
 export const taskStatusSchema = z.enum(TASK_STATUSES)
 
