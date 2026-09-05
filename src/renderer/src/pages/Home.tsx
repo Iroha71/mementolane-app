@@ -35,7 +35,18 @@ const STATUSES = [
 function Home(): React.JSX.Element {
   const [tasks, setTasks] = useState<TaskOutput[]>([])
   useEffect(() => {
-    window.api.readActiveTasks().then(setTasks)
+    let cancelled = false
+    window.api
+      .readActiveTasks()
+      .then((result) => {
+        if (!cancelled) setTasks(result)
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) console.error('タスクの取得に失敗しました', error)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (
