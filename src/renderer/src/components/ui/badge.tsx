@@ -20,7 +20,8 @@ const badgeVariants = cva(
         thisweek: 'bg-status-thisweek/10 text-status-thisweek [a]:hover:bg-status-thisweek/20',
         wip: 'bg-status-wip/10 text-status-wip [a]:hover:bg-status-wip/20',
         inreview: 'bg-status-inreview/10 text-status-inreview [a]:hover:bg-status-inreview/20',
-        inspection: 'bg-status-inspection/10 text-status-inspection [a]:hover:bg-status-inspection/20'
+        inspection:
+          'bg-status-inspection/10 text-status-inspection [a]:hover:bg-status-inspection/20'
       }
     },
     defaultVariants: {

@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { getActiveTasks } from './controllers/taskController'
+import { createTask, getActiveTasks } from './controllers/taskController'
 
 function createWindow(): void {
   // Create the browser window.
@@ -54,6 +54,11 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.handle('readTasks', async () => {
     const result = await getActiveTasks()
+
+    return result
+  })
+  ipcMain.handle('createTask', async (_event, input: unknown) => {
+    const result = await createTask(input)
 
     return result
   })
