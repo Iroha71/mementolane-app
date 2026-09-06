@@ -3,7 +3,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  readActiveTasks: () => ipcRenderer.invoke('readTasks')
+  readActiveTasks: () => ipcRenderer.invoke('readTasks'),
+  createTask: (input: unknown) => ipcRenderer.invoke('createTask', input)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
