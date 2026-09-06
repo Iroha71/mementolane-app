@@ -23,8 +23,9 @@ import { Textarea } from '@renderer/components/ui/textarea'
 import { taskInputSchema, type TaskInput } from '@shared/task'
 import React, { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useForm, Controller } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import z from 'zod'
 
 const statusItems = [
   { label: '予定', value: 'plan' },
@@ -33,6 +34,8 @@ const statusItems = [
   { label: 'レビュー中', value: 'inreview' },
   { label: '検収中', value: 'inspection' }
 ]
+
+type TaskFormInput = z.infer<typeof taskInputSchema>
 
 export default function Create(): React.JSX.Element {
   const [searchParams] = useSearchParams()
@@ -44,15 +47,13 @@ export default function Create(): React.JSX.Element {
     register,
     handleSubmit,
     control,
-    formState: {errors, isValid},
-  } = useForm<TaskInput>({
-    mode: "onBlur",
+    formState: { errors, isValid }
+  } = useForm<TaskFormInput>({
+    mode: 'onBlur',
     resolver: zodResolver(taskInputSchema),
     defaultValues: {
       title: '',
       status: (status as TaskInput['status']) ?? null,
-      startAt: null,
-      dueAt: null,
       detail: null
     }
   })
@@ -80,11 +81,7 @@ export default function Create(): React.JSX.Element {
               <FieldGroup>
                 <Field>
                   <FieldLabel>タスク名 *</FieldLabel>
-                  <Input
-                    placeholder="○○の開発"
-                    maxLength={30}
-                    {...register("title")}
-                  />
+                  <Input placeholder="○○の開発" maxLength={30} {...register('title')} />
                   <FieldError errors={[errors.title]} />
                 </Field>
                 <Field>
@@ -119,15 +116,15 @@ export default function Create(): React.JSX.Element {
                 <Field>
                   <FieldLabel>開始日 - 期限日</FieldLabel>
                   <InputGroup>
-                    <Input type="date" {...register("startAt")} />
-                    <Input type="date" {...register("dueAt")} />
+                    <Input type="date" {...register('startAt')} />
+                    <Input type="date" {...register('dueAt')} />
                   </InputGroup>
                   <FieldError errors={[errors.startAt]} />
                   <FieldError errors={[errors.dueAt]} />
                 </Field>
                 <Field>
                   <FieldLabel>メモ</FieldLabel>
-                  <Textarea maxLength={200} {...register("detail")} />
+                  <Textarea maxLength={200} {...register('detail')} />
                   <FieldError errors={[errors.detail]} />
                 </Field>
                 <FieldError errors={formErrors.map((message) => ({ message }))} />

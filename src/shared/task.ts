@@ -18,8 +18,8 @@ export const taskOutputSchema = z.object({
 export const taskInputSchema = z.object({
   title: z.string().min(1, 'タスク名は必須です').max(30, 'タスク名は30字以内で入力してください'),
   status: taskStatusSchema.nullable(),
-  startAt: z.string().nullable(),
-  dueAt: z.string().nullable(),
+  startAt: z.string().optional(),
+  dueAt: z.string().optional(),
   detail: z.string().max(200, 'メモは200字以内で入力してください').nullable()
 })
 
