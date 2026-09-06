@@ -2,7 +2,9 @@ import { z } from 'zod'
 
 export const TASK_STATUSES = ['plan', 'thisweek', 'wip', 'inreview', 'inspection', 'done'] as const
 
-export const taskStatusSchema = z.enum(TASK_STATUSES, '状態は選択肢に存在する値を入力してください')
+export const taskStatusSchema = z.enum(TASK_STATUSES, {
+  error: '状態は選択肢に存在する値を入力してください'
+})
 
 export const taskOutputSchema = z.object({
   id: z.number(),
