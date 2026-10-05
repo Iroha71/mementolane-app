@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 import { Task } from "./models/task.model";
 import { getTasks } from "./repositories/task-repository";
+import TaskCard from "./components/task/task-card";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  const emptyTaskList = () => {
+    return <p>タスクはありません</p>;
+  };
+
+  const taskList = () => {
+    return tasks.map((task) => <TaskCard task={task} />);
+  };
 
   useEffect(() => {
     getTasks()
@@ -17,12 +24,8 @@ function App() {
   return (
     <main className="container">
       <h1>Welcome to Tauri + React</h1>
-
-      <ul>
-        {tasks.map((task) => (
-          <li>{task.title}</li>
-        ))}
-      </ul>
+      {/* {tasks.length <= 0 ? emptyTaskList() : taskList()} */}
+      {taskList()}
     </main>
   );
 }
