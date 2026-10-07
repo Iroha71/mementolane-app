@@ -6,6 +6,7 @@ import TaskCard from "./components/task/task-card";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [error, setError] = useState<string>('');
 
   const emptyTaskList = () => {
     return <p>タスクはありません</p>;
@@ -24,8 +25,8 @@ function App() {
   return (
     <main className="container">
       <h1>Welcome to Tauri + React</h1>
-      {/* {tasks.length <= 0 ? emptyTaskList() : taskList()} */}
-      {taskList()}
+      {error !== '' ? <p>データ読み取り時にエラーが発生しました：{error}</p> : null}
+      {tasks.length <= 0 ? emptyTaskList() : taskList()}
     </main>
   );
 }
