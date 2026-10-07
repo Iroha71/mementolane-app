@@ -4,7 +4,6 @@ import { Tickets } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -15,7 +14,7 @@ interface TaskCardProps {
 
 export default function TaskCard({ task }: TaskCardProps) {
   return (
-    <Card className="mx-auto w-[20rem]">
+    <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Tickets className="size-4" />

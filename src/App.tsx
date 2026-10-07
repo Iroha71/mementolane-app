@@ -2,19 +2,11 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { Task } from "./models/task.model";
 import { getTasks } from "./repositories/task-repository";
-import TaskCard from "./components/task/task-card";
+import Swimlane from "./components/task/swimlane";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [error, setError] = useState<string>('');
-
-  const emptyTaskList = () => {
-    return <p>タスクはありません</p>;
-  };
-
-  const taskList = () => {
-    return tasks.map((task) => <TaskCard task={task} />);
-  };
 
   useEffect(() => {
     getTasks()
@@ -27,9 +19,13 @@ function App() {
 
   return (
     <main className="container">
-      <h1>Welcome to Tauri + React</h1>
-      {error !== '' ? <p>データ読み取り時にエラーが発生しました：{error}</p> : null}
-      {tasks.length <= 0 ? emptyTaskList() : taskList()}
+      <div className="flex flex-row gap-4 overflow-x-auto">
+        <Swimlane status="planning" tasks={tasks.filter((task) => task.status === 'planning')} />
+        <Swimlane status="thisweek" tasks={tasks.filter((task) => task.status === 'thisweek')} />
+        <Swimlane status="wip" tasks={tasks.filter((task) => task.status === 'wip')} />
+        <Swimlane status="reviewing" tasks={tasks.filter((task) => task.status === 'reviewing')} />
+        <Swimlane status="delivering" tasks={tasks.filter((task) => task.status === 'delivering')} />
+      </div>
     </main>
   );
 }
