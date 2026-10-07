@@ -19,7 +19,10 @@ function App() {
   useEffect(() => {
     getTasks()
       .then((tasks) => setTasks(tasks))
-      .catch((e) => console.error(e));
+      .catch((e) => {
+        console.error(e);
+        setError(e);
+      });
   }, []);
 
   return (
