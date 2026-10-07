@@ -5,7 +5,7 @@ import z from "zod";
 export async function getTasks(): Promise<Task[]> {
   const db = await getDb();
   const rows = await db.select<Task[]>(
-    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks",
+    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks;",
   );
   const result = z.array(task).safeParse(rows);
 
