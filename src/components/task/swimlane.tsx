@@ -1,20 +1,25 @@
 import { Task } from "@/models/task.model";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import TaskCard from "./task-card";
+import { LucideIcon } from "lucide-react";
 
 interface SwimlaneProps {
-    status: "planning" | "thisweek" | "wip" | "reviewing" | "delivering";
+    label: string;
+    icon: LucideIcon;
     tasks: Task[];
 }
 
-export default function Swimlane ({status, tasks}: SwimlaneProps) {
+export default function Swimlane ({label, icon: Icon, tasks}: SwimlaneProps) {
     return (
         <Card className="w-[22rem] shrink-0 [--card-spacing:--spacing(2)]">
             <CardHeader>
-                <CardTitle>{status}</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                    <Icon className="size-4" />
+                    {label}
+                </CardTitle>
             </CardHeader>
             <CardContent>
-                {tasks.length > 0 ? tasks.map((task) => <TaskCard task={task} />) : <p>タスクはありません</p>}
+                {tasks.length > 0 ? tasks.map((task) => <TaskCard key={task.id} task={task} />) : <p>タスクはありません</p>}
             </CardContent>
         </Card>
     )
