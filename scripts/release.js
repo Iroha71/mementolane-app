@@ -79,7 +79,7 @@ const main = async () => {
   }
 
   // package.json / package-lock.json の更新、コミット、タグ作成を npm version に任せる
-  npm("version", next, "-m", `upgrade: ${tag}`);
+  npm("version", next, "--tag-version-prefix=v", "-m", `upgrade: ${tag}`);
 
   console.log(`\n${tag} のコミットとタグを作成しました。`);
   console.log(`リモートへ反映するには: git push --follow-tags`);
