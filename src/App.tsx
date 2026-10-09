@@ -52,7 +52,7 @@ function App() {
   }, [tasks]);
 
   return (
-    <main className="container">
+    <main className="container h-screen">
       {
         error !== "" ? (
           <Alert className="mx-auto w-fit mb-5">
@@ -62,7 +62,7 @@ function App() {
           </Alert>
         ) : null
       }
-      <div className="flex flex-row gap-4 overflow-x-auto">
+      <div className="flex flex-1 min-h-0 flex-row gap-4 overflow-x-auto">
         {STATUSES.map(({ name, label, icon }) => (
           <Swimlane key={name} label={label} icon={icon} tasks={tasksByStatus[name]} />
         ))}

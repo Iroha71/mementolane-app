@@ -18,7 +18,7 @@ export default function Swimlane ({label, icon: Icon, tasks}: SwimlaneProps) {
                     {label}
                 </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-1 min-h-0 overflow-y-auto">
                 {tasks.length > 0 ? tasks.map((task) => <TaskCard key={task.id} task={task} />) : <p>タスクはありません</p>}
             </CardContent>
         </Card>
