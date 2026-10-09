@@ -1,11 +1,12 @@
 import { Route, Routes } from "react-router";
-import "./App.css";
 import Index from "./pages/Index";
+import TaskCreate from "./pages/tasks/TaskCreate";
 
 function App() {
   return (
-    <Routes >
+    <Routes>
       <Route index path="/" element={<Index />} />
+      <Route path="/task/create" element={<TaskCreate />} />
     </Routes>
   );
 }
