@@ -1,9 +1,14 @@
-import { execFileSync, execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
-import { stdin, stdout, exit } from "node:process";
+import { stdin, stdout, env, execPath, exit } from "node:process";
 
 const git = (...args) => execFileSync("git", args, { encoding: "utf8" }).trim();
+
+// Windows の npm.cmd はシェルなしで起動できないため、npm run が設定する
+// npm_execpath (npm-cli.js) を node で直接実行してシェルを経由しないようにする
+const npm = (...args) =>
+  execFileSync(execPath, [env.npm_execpath, ...args], { stdio: "inherit" });
 
 const bump = (version, type) => {
   const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
@@ -20,6 +25,11 @@ const bump = (version, type) => {
 };
 
 const main = async () => {
+if (!env.npm_execpath) {
+    console.error("npm run release から実行してください。");
+    exit(1);
+  }
+
   if (git("status", "--porcelain")) {
     console.error(
       "未コミットの変更があります。コミットまたは退避してから実行してください。",
@@ -67,7 +77,7 @@ const main = async () => {
   }
 
   // package.json / package-lock.json の更新、コミット、タグ作成を npm version に任せる
-  execSync(`npm version ${next} -m "upgrade: ${tag}"`, { stdio: "inherit" });
+  npm("version", next, "-m", `upgrade: ${tag}`);
 
   console.log(`\n${tag} のコミットとタグを作成しました。`);
   console.log(`リモートへ反映するには: git push --follow-tags`);
