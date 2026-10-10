@@ -29,7 +29,7 @@ const STATUSES: StatusGroup[] = [
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     getTasks()
@@ -42,7 +42,7 @@ function App() {
 
   const tasksByStatus = useMemo(() => {
     const grouped = Object.fromEntries(
-      STATUSES.map(({ name }) => [name, [] as Task[]])
+      STATUSES.map(({ name }) => [name, [] as Task[]]),
     ) as Record<Task["status"], Task[]>;
     for (const t of tasks) {
       grouped[t.status].push(t);
@@ -52,18 +52,21 @@ function App() {
 
   return (
     <main className="container h-screen">
-      {
-        error !== "" ? (
-          <Alert className="mx-auto w-fit mb-5">
-            <InfoIcon />
-            <AlertTitle>データの読み込みに失敗しました</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        ) : null
-      }
-      <div className="flex flex-1 min-h-0 flex-row gap-4 overflow-x-auto">
+      {error !== "" ? (
+        <Alert className="mx-auto mb-5 w-fit">
+          <InfoIcon />
+          <AlertTitle>データの読み込みに失敗しました</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      ) : null}
+      <div className="flex h-screen min-h-0 flex-1 flex-row gap-4 overflow-x-auto p-4">
         {STATUSES.map(({ name, label, icon }) => (
-          <Swimlane key={name} label={label} icon={icon} tasks={tasksByStatus[name]} />
+          <Swimlane
+            key={name}
+            label={label}
+            icon={icon}
+            tasks={tasksByStatus[name]}
+          />
         ))}
       </div>
     </main>

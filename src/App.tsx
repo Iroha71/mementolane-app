@@ -5,7 +5,7 @@ import TaskCreate from "./pages/tasks/TaskCreate";
 function App() {
   return (
     <Routes>
-      <Route index path="/" element={<Index />} />
+      <Route index element={<Index />} />
       <Route path="/task/create" element={<TaskCreate />} />
     </Routes>
   );
