@@ -30,9 +30,11 @@ export default function TaskCreate() {
   };
 
   return (
-    <div className="flex min-h-screen justify-center p-4">
+    <div className="flex min-h-screen flex-col items-center gap-4 p-4">
       {error && (
-        <p className="text-red-500">データ登録に失敗しました: {error}</p>
+        <p className="w-full max-w-[30rem] text-red-500">
+          データ登録に失敗しました: {error}
+        </p>
       )}
       <TaskForm onSubmit={handleSubmit} />
     </div>
