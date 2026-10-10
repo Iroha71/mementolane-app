@@ -15,3 +15,19 @@ export async function getTasks(): Promise<Task[]> {
 
   return result.data;
 }
+
+export async function createTask(
+  title: string,
+  status: string,
+  start_at: string | null,
+  due_at: string | null,
+): Promise<number> {
+  const db = await getDb();
+
+  const result = await db.execute(
+    "INSERT INTO tasks (title, status, start_at, due_at) VALUES ($1, $2, $3, $4)",
+    [title, status, start_at, due_at],
+  );
+
+  return result.lastInsertId ?? 0;
+}

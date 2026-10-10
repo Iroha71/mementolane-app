@@ -18,13 +18,21 @@ import { STATUSES } from "@/consts/constValues";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 interface TaskFormProps {
-  onSubmit: (values: TaskFormRequest) => void;
+  onSubmit: (values: TaskFormRequest) => void | Promise<void>;
+  parseError?: z.ZodError<TaskFormRequest>;
 }
 
-const taskFormRequest = task.omit({
+export const taskFormRequest = task.omit({
   id: true,
 });
 export type TaskFormRequest = z.infer<typeof taskFormRequest>;
+
+const FORM_FIELDS: (keyof TaskFormRequest)[] = [
+  "title",
+  "status",
+  "start_at",
+  "due_at",
+];
 
 const RequireMark = (): React.JSX.Element => {
   return <span className="text-red-600">*</span>;
@@ -32,13 +40,14 @@ const RequireMark = (): React.JSX.Element => {
 
 export default function TaskForm({
   onSubmit,
+  parseError,
 }: TaskFormProps): React.JSX.Element {
   const navigate = useNavigate();
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<TaskFormRequest>({
     resolver: zodResolver(taskFormRequest),
     mode: "onChange",
@@ -50,6 +59,15 @@ export default function TaskForm({
       completed: 0,
     },
   });
+
+  const parseIssuesOf = (...names: (keyof TaskFormRequest)[]) =>
+    parseError?.issues.filter((issue) =>
+      names.includes(issue.path[0] as keyof TaskFormRequest),
+    );
+  // 入力欄を持たない項目のエラーはフォーム下部にまとめて表示する
+  const otherParseIssues = parseError?.issues.filter(
+    (issue) => !FORM_FIELDS.includes(issue.path[0] as keyof TaskFormRequest),
+  );
 
   return (
     <div className="w-full max-w-[30rem]">
@@ -69,6 +87,7 @@ export default function TaskForm({
                   placeholder="○○を実装する"
                 />
                 <FieldError errors={[errors.title]} />
+                <FieldError errors={parseIssuesOf("title")} />
               </Field>
               <FieldSet>
                 <FieldLegend variant="label">状態</FieldLegend>
@@ -104,6 +123,7 @@ export default function TaskForm({
                   )}
                 />
                 <FieldError errors={[errors.status]} />
+                <FieldError errors={parseIssuesOf("status")} />
               </FieldSet>
               <div className="grid grid-cols-2 gap-4">
                 <Field>
@@ -116,10 +136,12 @@ export default function TaskForm({
                 </Field>
               </div>
               <FieldError errors={[errors.start_at, errors.due_at]} />
+              <FieldError errors={parseIssuesOf("start_at", "due_at")} />
             </FieldGroup>
           </FieldSet>
+          <FieldError errors={otherParseIssues} />
           <Field orientation="horizontal" className="flex justify-center">
-            <Button type="submit" disabled={!isValid}>
+            <Button type="submit" disabled={!isValid || isSubmitting}>
               登録する
             </Button>
             <Button variant="outline" onClick={() => navigate(-1)}>
