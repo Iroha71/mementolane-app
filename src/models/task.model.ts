@@ -7,7 +7,7 @@ export const task = z.object({
   start_at: z.string().nullable(),
   due_at: z.string().nullable(),
   completed: z.union([z.literal(0), z.literal(1)]),
-  created_at: z.string(),
+  created_at: z.string().optional(),
 });
 
 export type Task = z.infer<typeof task>;

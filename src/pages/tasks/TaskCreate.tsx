@@ -1,10 +1,17 @@
-import { NavLink } from "react-router";
+import TaskForm, { TaskFormRequest } from "@/components/task/task-form";
+import { useState } from "react";
 
 export default function TaskCreate() {
+  const [taskValue, setTaskValue] = useState<TaskFormRequest | null>(null);
+  const handleSubmit = (values: TaskFormRequest) => {
+    console.log(values);
+    setTaskValue(values);
+  };
+
   return (
-    <div>
-      <h1>タスク作成画面</h1>
-      <NavLink to="/">ホームへ戻る</NavLink>
+    <div className="flex min-h-screen justify-center p-4">
+      <TaskForm onSubmit={handleSubmit} />
+      <div>{taskValue?.title}</div>
     </div>
   );
 }
