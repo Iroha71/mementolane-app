@@ -23,6 +23,7 @@ interface TaskFormProps {
 
 export const taskFormRequest = task.omit({
   id: true,
+  created_at: true,
 });
 export type TaskFormRequest = z.infer<typeof taskFormRequest>;
 
