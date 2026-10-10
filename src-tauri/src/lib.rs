@@ -1,3 +1,5 @@
+#[cfg(debug_assertions)]
+use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 fn migrations() -> Vec<Migration> {
@@ -37,6 +39,14 @@ pub fn run() {
                 .add_migrations("sqlite:mementolane.db", migrations())
                 .build(),
         )
+        .setup(|app| {
+            // 開発ビルドのときだけ、起動時にdevtoolsを開く
+            #[cfg(debug_assertions)]
+            if let Some(window) = app.get_webview_window("main") {
+                window.open_devtools();
+            }
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
