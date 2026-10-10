@@ -18,7 +18,7 @@ export async function getTasks(): Promise<Task[]> {
 
 export async function createTask(
   title: string,
-  status: string,
+  status: Task["status"],
   start_at: string | null,
   due_at: string | null,
 ): Promise<number> {
@@ -29,5 +29,9 @@ export async function createTask(
     [title, status, start_at, due_at],
   );
 
-  return result.lastInsertId ?? 0;
+  if (result.lastInsertId == null) {
+    throw new Error("登録したタスクのIDを取得できませんでした");
+  }
+
+  return result.lastInsertId;
 }

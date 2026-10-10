@@ -18,12 +18,8 @@ export default function TaskCreate() {
       values.start_at || null,
       values.due_at || null,
     )
-      .then((lastInsertId) => {
-        if (lastInsertId !== 0) {
-          navigate("/");
-        } else {
-          throw new Error("登録したタスクのIDを取得できませんでした");
-        }
+      .then(() => {
+        navigate("/");
       })
       .catch((e: unknown) => {
         console.error(e);
