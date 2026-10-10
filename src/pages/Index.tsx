@@ -13,9 +13,9 @@ function App() {
   useEffect(() => {
     getTasks()
       .then((tasks) => setTasks(tasks))
-      .catch((e) => {
+      .catch((e: unknown) => {
         console.error(e);
-        setError(e);
+        setError((e instanceof Error ? e.message : String(e)) || "不明なエラー");
       });
   }, []);
 
