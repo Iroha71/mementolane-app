@@ -1,6 +1,6 @@
 import { getDb } from "@/lib/db";
 import { task, Task } from "@/models/task.model";
-import z from "zod";
+import z, { parse } from "zod";
 
 export async function getTasks(): Promise<Task[]> {
   const db = await getDb();
@@ -34,4 +34,27 @@ export async function createTask(
   }
 
   return result.lastInsertId;
+}
+
+export async function toggleCompleted(
+  id: number,
+  completed: boolean,
+): Promise<Task> {
+  const db = await getDb();
+  const completedNumber = completed ? 1 : 0;
+
+  const result = await db.select<Task[]>(
+    "UPDATE tasks SET completed = $1 WHERE id = $2 RETURNING id, title, status, start_at, due_at, completed, created_at",
+    [completedNumber, id],
+  );
+
+  if (result.length <= 0) throw new Error("対象のタスクがありません");
+
+  const parsedResult = z.array(task).length(1).safeParse(result);
+  if (!parsedResult.success)
+    throw new Error(
+      `データ形式が不正です\n${z.prettifyError(parsedResult.error)}`,
+    );
+
+  return parsedResult.data[0];
 }
