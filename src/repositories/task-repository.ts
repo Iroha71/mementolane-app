@@ -2,10 +2,13 @@ import { getDb } from "@/lib/db";
 import { task, Task } from "@/models/task.model";
 import z from "zod";
 
-export async function getTasks(): Promise<Task[]> {
+export async function getTasks({
+  includeCompleted = false,
+}: { includeCompleted?: boolean } = {}): Promise<Task[]> {
   const db = await getDb();
+  const where = includeCompleted ? "" : " WHERE completed = 0";
   const rows = await db.select<Task[]>(
-    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks;",
+    `SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks${where};`,
   );
   const result = z.array(task).safeParse(rows);
 
@@ -34,4 +37,35 @@ export async function createTask(
   }
 
   return result.lastInsertId;
+}
+
+export async function setTaskCompleted(
+  id: number,
+  completed: boolean,
+): Promise<Task> {
+  const db = await getDb();
+  const completedNumber = completed ? 1 : 0;
+
+  // 不正なデータを更新してしまわないよう、更新前に対象行を検証する
+  const rows = await db.select<Task[]>(
+    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks WHERE id = $1",
+    [id],
+  );
+
+  if (rows.length === 0) throw new Error("対象のタスクがありません");
+
+  const parsedResult = task.safeParse(rows[0]);
+  if (!parsedResult.success)
+    throw new Error(
+      `データ形式が不正です\n${z.prettifyError(parsedResult.error)}`,
+    );
+
+  const result = await db.execute(
+    "UPDATE tasks SET completed = $1 WHERE id = $2",
+    [completedNumber, id],
+  );
+
+  if (result.rowsAffected === 0) throw new Error("対象のタスクがありません");
+
+  return { ...parsedResult.data, completed: completedNumber };
 }

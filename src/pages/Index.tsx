@@ -6,18 +6,41 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import { STATUSES } from "@/consts/constValues";
 
+type ErrorInfo = { title: string; message: string } | null;
+
+const toMessage = (e: unknown) =>
+  (e instanceof Error ? e.message : String(e)) || "不明なエラー";
+
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<ErrorInfo>(null);
 
   useEffect(() => {
     getTasks()
       .then((tasks) => setTasks(tasks))
       .catch((e: unknown) => {
         console.error(e);
-        setError((e instanceof Error ? e.message : String(e)) || "不明なエラー");
+        setError({
+          title: "データの読み込みに失敗しました",
+          message: toMessage(e),
+        });
       });
   }, []);
+
+  const handleTaskUpdated = (updated: Task) => {
+    setTasks((prev) =>
+      updated.completed === 1
+        ? prev.filter((current) => current.id !== updated.id)
+        : prev.map((current) =>
+            current.id === updated.id ? updated : current,
+          ),
+    );
+    setError(null);
+  };
+
+  const handleTaskError = (message: string) => {
+    setError({ title: "タスクの更新に失敗しました", message });
+  };
 
   const tasksByStatus = useMemo(() => {
     const grouped = Object.fromEntries(
@@ -31,11 +54,11 @@ function App() {
 
   return (
     <main className="container h-screen">
-      {error !== "" ? (
+      {error ? (
         <Alert className="mx-auto mb-5 w-fit">
           <InfoIcon />
-          <AlertTitle>データの読み込みに失敗しました</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
+          <AlertTitle>{error.title}</AlertTitle>
+          <AlertDescription>{error.message}</AlertDescription>
         </Alert>
       ) : null}
       <div className="flex h-screen min-h-0 flex-1 flex-row gap-4 overflow-x-auto p-4">
@@ -45,6 +68,8 @@ function App() {
             label={label}
             icon={icon}
             tasks={tasksByStatus[name]}
+            onTaskUpdate={handleTaskUpdated}
+            onError={handleTaskError}
           />
         ))}
       </div>
