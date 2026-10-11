@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { formatDateWithWeekday } from "@/lib/date";
 import { Task } from "@/models/task.model";
 import { Tickets } from "lucide-react";
@@ -8,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { toggleCompleted } from "@/repositories/task-repository";
+import { setTaskCompleted } from "@/repositories/task-repository";
 import { Button } from "../ui/button";
 
 interface TaskCardProps {
@@ -18,13 +19,19 @@ interface TaskCardProps {
 }
 
 export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const completeTask = async () => {
+    if (isUpdating) return;
+    setIsUpdating(true);
     try {
-      const updated = await toggleCompleted(task.id, true);
+      const updated = await setTaskCompleted(task.id, true);
       onUpdated(updated);
     } catch (e) {
       console.error(e);
       onError((e instanceof Error ? e.message : String(e)) || "不明なエラー");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -50,7 +57,9 @@ export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={() => completeTask()}>完了にする</Button>
+        <Button onClick={completeTask} disabled={isUpdating}>
+          {isUpdating ? "更新中..." : "完了にする"}
+        </Button>
       </CardFooter>
     </Card>
   );

@@ -36,25 +36,33 @@ export async function createTask(
   return result.lastInsertId;
 }
 
-export async function toggleCompleted(
+export async function setTaskCompleted(
   id: number,
   completed: boolean,
 ): Promise<Task> {
   const db = await getDb();
   const completedNumber = completed ? 1 : 0;
 
-  const result = await db.select<Task[]>(
-    "UPDATE tasks SET completed = $1 WHERE id = $2 RETURNING id, title, status, start_at, due_at, completed, created_at",
-    [completedNumber, id],
+  // 不正なデータを更新してしまわないよう、更新前に対象行を検証する
+  const rows = await db.select<Task[]>(
+    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks WHERE id = $1",
+    [id],
   );
 
-  if (result.length <= 0) throw new Error("対象のタスクがありません");
+  if (rows.length === 0) throw new Error("対象のタスクがありません");
 
-  const parsedResult = z.array(task).length(1).safeParse(result);
+  const parsedResult = task.safeParse(rows[0]);
   if (!parsedResult.success)
     throw new Error(
       `データ形式が不正です\n${z.prettifyError(parsedResult.error)}`,
     );
 
-  return parsedResult.data[0];
+  const result = await db.execute(
+    "UPDATE tasks SET completed = $1 WHERE id = $2",
+    [completedNumber, id],
+  );
+
+  if (result.rowsAffected === 0) throw new Error("対象のタスクがありません");
+
+  return { ...parsedResult.data, completed: completedNumber };
 }
