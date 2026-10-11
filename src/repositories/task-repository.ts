@@ -1,11 +1,11 @@
 import { getDb } from "@/lib/db";
 import { task, Task } from "@/models/task.model";
-import z, { parse } from "zod";
+import z from "zod";
 
 export async function getTasks(): Promise<Task[]> {
   const db = await getDb();
   const rows = await db.select<Task[]>(
-    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks;",
+    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks WHERE completed = 0;",
   );
   const result = z.array(task).safeParse(rows);
 

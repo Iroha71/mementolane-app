@@ -9,9 +9,17 @@ interface SwimlaneProps {
   label: string;
   icon: LucideIcon;
   tasks: Task[];
+  onTaskUpdate: (task: Task) => void;
+  onError: (message: string) => void;
 }
 
-export default function Swimlane({ label, icon: Icon, tasks }: SwimlaneProps) {
+export default function Swimlane({
+  label,
+  icon: Icon,
+  tasks,
+  onTaskUpdate,
+  onError,
+}: SwimlaneProps) {
   let navigate = useNavigate();
 
   return (
@@ -28,7 +36,14 @@ export default function Swimlane({ label, icon: Icon, tasks }: SwimlaneProps) {
       </CardHeader>
       <CardContent className="min-h-0 flex-1 overflow-y-auto">
         {tasks.length > 0 ? (
-          tasks.map((task) => <TaskCard key={task.id} task={task} />)
+          tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onUpdated={onTaskUpdate}
+              onError={onError}
+            />
+          ))
         ) : (
           <p>タスクはありません</p>
         )}

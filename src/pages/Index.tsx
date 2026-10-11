@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Task } from "@/models/task.model";
+import { task, Task } from "@/models/task.model";
 import { getTasks } from "@/repositories/task-repository";
 import Swimlane from "@/components/task/swimlane";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -15,15 +15,25 @@ function App() {
       .then((tasks) => setTasks(tasks))
       .catch((e: unknown) => {
         console.error(e);
-        setError((e instanceof Error ? e.message : String(e)) || "不明なエラー");
+        setError(
+          (e instanceof Error ? e.message : String(e)) || "不明なエラー",
+        );
       });
   }, []);
+
+  const handleTaskUpdated = (updated: Task) => {
+    const newTasks = tasks.map((current) =>
+      current.id === updated.id ? updated : current,
+    );
+    setTasks(newTasks);
+  };
 
   const tasksByStatus = useMemo(() => {
     const grouped = Object.fromEntries(
       STATUSES.map(({ name }) => [name, [] as Task[]]),
     ) as Record<Task["status"], Task[]>;
     for (const t of tasks) {
+      if (t.completed === 1) continue;
       grouped[t.status].push(t);
     }
     return grouped;
@@ -45,6 +55,8 @@ function App() {
             label={label}
             icon={icon}
             tasks={tasksByStatus[name]}
+            onTaskUpdate={handleTaskUpdated}
+            onError={setError}
           />
         ))}
       </div>

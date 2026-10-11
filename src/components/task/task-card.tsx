@@ -4,15 +4,29 @@ import { Tickets } from "lucide-react";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { Button } from "@base-ui/react/button";
+import { toggleCompleted } from "@/repositories/task-repository";
 
 interface TaskCardProps {
   task: Task;
+  onUpdated: (task: Task) => void;
+  onError: (message: string) => void;
 }
 
-export default function TaskCard({ task }: TaskCardProps) {
+export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
+  const completeTask = async () => {
+    try {
+      const updated = await toggleCompleted(task.id, true);
+      onUpdated(updated);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <Card className="mx-auto w-full">
       <CardHeader>
@@ -34,6 +48,9 @@ export default function TaskCard({ task }: TaskCardProps) {
           </p>
         </div>
       </CardContent>
+      <CardFooter>
+        <Button onClick={() => completeTask()}>完了にする</Button>
+      </CardFooter>
     </Card>
   );
 }
