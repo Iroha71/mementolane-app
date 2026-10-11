@@ -24,6 +24,7 @@ export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
       onUpdated(updated);
     } catch (e) {
       console.error(e);
+      onError((e instanceof Error ? e.message : String(e)) || "不明なエラー");
     }
   };
 
