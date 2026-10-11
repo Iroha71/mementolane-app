@@ -2,10 +2,13 @@ import { getDb } from "@/lib/db";
 import { task, Task } from "@/models/task.model";
 import z from "zod";
 
-export async function getTasks(): Promise<Task[]> {
+export async function getTasks({
+  includeCompleted = false,
+}: { includeCompleted?: boolean } = {}): Promise<Task[]> {
   const db = await getDb();
+  const where = includeCompleted ? "" : " WHERE completed = 0";
   const rows = await db.select<Task[]>(
-    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks WHERE completed = 0;",
+    `SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks${where};`,
   );
   const result = z.array(task).safeParse(rows);
 

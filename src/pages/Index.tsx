@@ -29,7 +29,11 @@ function App() {
 
   const handleTaskUpdated = (updated: Task) => {
     setTasks((prev) =>
-      prev.map((current) => (current.id === updated.id ? updated : current)),
+      updated.completed === 1
+        ? prev.filter((current) => current.id !== updated.id)
+        : prev.map((current) =>
+            current.id === updated.id ? updated : current,
+          ),
     );
     setError(null);
   };
@@ -43,7 +47,6 @@ function App() {
       STATUSES.map(({ name }) => [name, [] as Task[]]),
     ) as Record<Task["status"], Task[]>;
     for (const t of tasks) {
-      if (t.completed === 1) continue;
       grouped[t.status].push(t);
     }
     return grouped;
