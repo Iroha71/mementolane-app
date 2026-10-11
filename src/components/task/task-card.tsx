@@ -8,8 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Button } from "@base-ui/react/button";
 import { toggleCompleted } from "@/repositories/task-repository";
+import { Button } from "../ui/button";
 
 interface TaskCardProps {
   task: Task;
