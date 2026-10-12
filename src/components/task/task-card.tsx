@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { formatDateWithWeekday } from "@/lib/date";
-import { Task } from "@/models/task.model";
+import { task as taskSchema, Task } from "@/models/task.model";
 import { Tickets } from "lucide-react";
 import {
   Card,
@@ -9,8 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { setTaskCompleted } from "@/repositories/task-repository";
+import { changeStatus, setTaskCompleted } from "@/repositories/task-repository";
 import { Button } from "../ui/button";
+import { Field } from "../ui/field";
+import { STATUSES } from "@/consts/constValues";
 
 interface TaskCardProps {
   task: Task;
@@ -30,6 +32,26 @@ export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
     } catch (e) {
       console.error(e);
       onError((e instanceof Error ? e.message : String(e)) || "不明なエラー");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleChangeStatus = async (
+    event: React.ChangeEvent<HTMLSelectElement, HTMLSelectElement>,
+  ) => {
+    if (isUpdating) return;
+    setIsUpdating(true);
+    try {
+      const status = taskSchema.shape.status.parse(event.currentTarget.value);
+      await changeStatus(task.id, status);
+      onUpdated({ ...task, status });
+    } catch (error) {
+      console.error(error);
+      onError(
+        (error instanceof Error ? error.message : String(error)) ||
+          "不明なエラー",
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -55,6 +77,19 @@ export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
             期限日: {task.due_at ? formatDateWithWeekday(task.due_at) : "---"}
           </p>
         </div>
+        <hr className="my-2" />
+        <Field>
+          <select name="status" id="status" onChange={handleChangeStatus}>
+            {STATUSES.map((_status) => (
+              <option
+                value={_status.name}
+                selected={_status.name === task.status}
+              >
+                {_status.label}
+              </option>
+            ))}
+          </select>
+        </Field>
       </CardContent>
       <CardFooter>
         <Button onClick={completeTask} disabled={isUpdating}>

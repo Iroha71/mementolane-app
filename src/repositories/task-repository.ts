@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { task, Task } from "@/models/task.model";
+import { QueryResult } from "@tauri-apps/plugin-sql";
 import z from "zod";
 
 export async function getTasks({
@@ -68,4 +69,16 @@ export async function setTaskCompleted(
   if (result.rowsAffected === 0) throw new Error("対象のタスクがありません");
 
   return { ...parsedResult.data, completed: completedNumber };
+}
+
+export async function changeStatus(id: number, status: Task["status"]) {
+  const db = getDb();
+
+  const rows = (await db).execute(
+    "UPDATE tasks SET status = $1 WHERE id = $2;",
+    [status, id],
+  );
+
+  if ((await rows).rowsAffected === 0)
+    throw new Error("対象のタスクが見つかりません");
 }
