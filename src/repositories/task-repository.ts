@@ -39,14 +39,9 @@ export async function createTask(
   return result.lastInsertId;
 }
 
-export async function setTaskCompleted(
-  id: number,
-  completed: boolean,
-): Promise<Task> {
+async function findTask(id: number): Promise<Task> {
   const db = await getDb();
-  const completedNumber = completed ? 1 : 0;
 
-  // 不正なデータを更新してしまわないよう、更新前に対象行を検証する
   const rows = await db.select<Task[]>(
     "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks WHERE id = $1",
     [id],
@@ -60,6 +55,19 @@ export async function setTaskCompleted(
       `データ形式が不正です\n${z.prettifyError(parsedResult.error)}`,
     );
 
+  return parsedResult.data;
+}
+
+export async function setTaskCompleted(
+  id: number,
+  completed: boolean,
+): Promise<Task> {
+  const db = await getDb();
+  const completedNumber = completed ? 1 : 0;
+
+  // 不正なデータを更新してしまわないよう、更新前に対象行を検証する
+  const current = await findTask(id);
+
   const result = await db.execute(
     "UPDATE tasks SET completed = $1 WHERE id = $2",
     [completedNumber, id],
@@ -67,7 +75,7 @@ export async function setTaskCompleted(
 
   if (result.rowsAffected === 0) throw new Error("対象のタスクがありません");
 
-  return { ...parsedResult.data, completed: completedNumber };
+  return { ...current, completed: completedNumber };
 }
 
 export async function changeStatus(
@@ -77,20 +85,8 @@ export async function changeStatus(
   const db = await getDb();
 
   // 不正なデータを更新してしまわないよう、更新前に対象行を検証する
-  const rows = await db.select<Task[]>(
-    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks WHERE id = $1",
-    [id],
-  );
-
-  if (rows.length === 0) throw new Error("対象のタスクがありません");
-
-  const parsedResult = task.safeParse(rows[0]);
-  if (!parsedResult.success)
-    throw new Error(
-      `データ形式が不正です\n${z.prettifyError(parsedResult.error)}`,
-    );
-
-  if (parsedResult.data.completed)
+  const current = await findTask(id);
+  if (current.completed)
     throw new Error("完了済みのタスクの状態は変更できません");
 
   const result = await db.execute(
@@ -98,8 +94,12 @@ export async function changeStatus(
     [status, id],
   );
 
+  // 検証後に削除・完了された場合も更新対象から外れる
   if (result.rowsAffected === 0)
-    throw new Error("対象のタスクがありません");
+    throw new Error(
+      "対象のタスクが削除されたか完了済みのため、状態を変更できません",
+    );
 
-  return { ...parsedResult.data, status };
+  // 更新と同時に他の列が変わっている可能性があるため、更新後の行を返す
+  return findTask(id);
 }
