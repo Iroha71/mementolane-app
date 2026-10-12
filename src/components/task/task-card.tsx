@@ -44,8 +44,8 @@ export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
     setIsUpdating(true);
     try {
       const status = taskSchema.shape.status.parse(event.currentTarget.value);
-      await changeStatus(task.id, status);
-      onUpdated({ ...task, status });
+      const updated = await changeStatus(task.id, status);
+      onUpdated(updated);
     } catch (error) {
       console.error(error);
       onError(
@@ -79,12 +79,15 @@ export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
         </div>
         <hr className="my-2" />
         <Field>
-          <select name="status" id="status" onChange={handleChangeStatus}>
+          <select
+            name="status"
+            id={`status-${task.id}`}
+            value={task.status}
+            onChange={handleChangeStatus}
+            disabled={isUpdating}
+          >
             {STATUSES.map((_status) => (
-              <option
-                value={_status.name}
-                selected={_status.name === task.status}
-              >
+              <option key={_status.name} value={_status.name}>
                 {_status.label}
               </option>
             ))}
