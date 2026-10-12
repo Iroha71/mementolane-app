@@ -82,7 +82,7 @@ export async function changeStatus(
     [id],
   );
 
-  if (rows.length === 0) throw new Error("対象のタスクが見つかりません");
+  if (rows.length === 0) throw new Error("対象のタスクがありません");
 
   const parsedResult = task.safeParse(rows[0]);
   if (!parsedResult.success)
@@ -99,7 +99,7 @@ export async function changeStatus(
   );
 
   if (result.rowsAffected === 0)
-    throw new Error("対象のタスクが見つかりません");
+    throw new Error("対象のタスクがありません");
 
   return { ...parsedResult.data, status };
 }

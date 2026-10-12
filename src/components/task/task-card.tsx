@@ -82,6 +82,7 @@ export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
           <select
             name="status"
             id={`status-${task.id}`}
+            aria-label="状態"
             value={task.status}
             onChange={handleChangeStatus}
             disabled={isUpdating}
