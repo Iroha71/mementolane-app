@@ -85,7 +85,8 @@ export default function TaskCard({ task, onUpdated, onError }: TaskCardProps) {
             aria-label="状態"
             value={task.status}
             onChange={handleChangeStatus}
-            disabled={isUpdating}
+            // 完了済みタスクは状態を変更できないため操作不可にする
+            disabled={isUpdating || task.completed === 1}
           >
             {STATUSES.map((_status) => (
               <option key={_status.name} value={_status.name}>

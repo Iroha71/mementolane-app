@@ -84,6 +84,13 @@ export async function changeStatus(
 ): Promise<Task> {
   const db = await getDb();
 
+  // 型は実行時に保証されないため、不正な値を保存しないよう検証する
+  const parsedStatus = task.shape.status.safeParse(status);
+  if (!parsedStatus.success)
+    throw new Error(
+      `状態の値が不正です\n${z.prettifyError(parsedStatus.error)}`,
+    );
+
   // 不正なデータを更新してしまわないよう、更新前に対象行を検証する
   const current = await findTask(id);
   if (current.completed)
@@ -91,7 +98,7 @@ export async function changeStatus(
 
   const result = await db.execute(
     "UPDATE tasks SET status = $1 WHERE id = $2 AND completed = 0",
-    [status, id],
+    [parsedStatus.data, id],
   );
 
   // 検証後に削除・完了された場合も更新対象から外れる
