@@ -1,6 +1,5 @@
 import { getDb } from "@/lib/db";
 import { task, Task } from "@/models/task.model";
-import { QueryResult } from "@tauri-apps/plugin-sql";
 import z from "zod";
 
 export async function getTasks({
@@ -71,14 +70,36 @@ export async function setTaskCompleted(
   return { ...parsedResult.data, completed: completedNumber };
 }
 
-export async function changeStatus(id: number, status: Task["status"]) {
-  const db = getDb();
+export async function changeStatus(
+  id: number,
+  status: Task["status"],
+): Promise<Task> {
+  const db = await getDb();
 
-  const rows = (await db).execute(
-    "UPDATE tasks SET status = $1 WHERE id = $2;",
+  // 不正なデータを更新してしまわないよう、更新前に対象行を検証する
+  const rows = await db.select<Task[]>(
+    "SELECT id, title, status, start_at, due_at, completed, created_at FROM tasks WHERE id = $1",
+    [id],
+  );
+
+  if (rows.length === 0) throw new Error("対象のタスクが見つかりません");
+
+  const parsedResult = task.safeParse(rows[0]);
+  if (!parsedResult.success)
+    throw new Error(
+      `データ形式が不正です\n${z.prettifyError(parsedResult.error)}`,
+    );
+
+  if (parsedResult.data.completed)
+    throw new Error("完了済みのタスクの状態は変更できません");
+
+  const result = await db.execute(
+    "UPDATE tasks SET status = $1 WHERE id = $2 AND completed = 0",
     [status, id],
   );
 
-  if ((await rows).rowsAffected === 0)
+  if (result.rowsAffected === 0)
     throw new Error("対象のタスクが見つかりません");
+
+  return { ...parsedResult.data, status };
 }
