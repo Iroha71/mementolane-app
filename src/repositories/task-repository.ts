@@ -66,7 +66,7 @@ export async function setTaskCompleted(
   const completedNumber = completed ? 1 : 0;
 
   // 不正なデータを更新してしまわないよう、更新前に対象行を検証する
-  const current = await findTask(id);
+  await findTask(id);
 
   const result = await db.execute(
     "UPDATE tasks SET completed = $1 WHERE id = $2",
@@ -75,7 +75,8 @@ export async function setTaskCompleted(
 
   if (result.rowsAffected === 0) throw new Error("対象のタスクがありません");
 
-  return { ...current, completed: completedNumber };
+  // 更新と同時に他の列が変わっている可能性があるため、更新後の行を返す
+  return findTask(id);
 }
 
 export async function changeStatus(
