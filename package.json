@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "release": "node scripts/release.js",
+    "db:refresh": "node scripts/db-refresh.js",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

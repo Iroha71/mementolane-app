@@ -54,6 +54,7 @@ npm run tauri dev
 | `npm run format`       | Prettier でコードを整形                            |
 | `npm run format:check` | Prettier の整形ルールに沿っているかチェック        |
 | `npm run release`      | バージョンを上げてリリース用のコミット・タグを作成 |
+| `npm run db:refresh`   | DB ファイルを削除し、アプリを起動して生成しなおす  |
 
 ## ディレクトリ構成
 
@@ -69,12 +70,15 @@ npm run tauri dev
 │   └── lib/                 # DB 接続・日付処理などのユーティリティ
 ├── src-tauri/               # Tauri（Rust）
 │   └── src/lib.rs           # プラグイン設定と DB マイグレーション
-└── scripts/release.js       # リリース用スクリプト
+└── scripts/
+    ├── release.js           # リリース用スクリプト
+    └── db-refresh.js        # DB 再生成用スクリプト
 ```
 
 ### データベース
 
 - DB ファイルは `mementolane.db` で、アプリのデータディレクトリに作成されます。
+- `npm run db:refresh` で既存の DB ファイルを削除し、アプリを起動してマイグレーションから生成しなおせます（アプリ起動中は削除できないため、終了してから実行してください）。
 - テーブル定義はマイグレーションとして `src-tauri/src/lib.rs` で管理しています。スキーマを変更するときは、既存のマイグレーションを書き換えず、新しいバージョンを追加してください。
 
 ## リリース
