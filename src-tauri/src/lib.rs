@@ -39,6 +39,26 @@ fn migrations() -> Vec<Migration> {
             ",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "実績時間テーブルの追加",
+            sql: "CREATE TABLE actuals(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date TEXT NOT NULL,
+                slot INTEGER NOT NULL,
+                task_id INTEGER NOT NULL
+            );",
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 4,
+            description: "実績時間テーブルの追加",
+            sql: "INSERT INTO actuals (date, slot, task_id) VALUES
+            ('2026-10-21', 1, 1),
+            ('2026-10-28', 2, 3),
+            ('2026-11-30', 5, 6);",
+            kind: MigrationKind::Up,
+        }
     ]
 }
 
