@@ -4,8 +4,8 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { env, execPath, exit, platform } from "node:process";
 
-// src-tauri/src/lib.rs の add_migrations に渡している DB 名と合わせる
-const DB_NAME = "mementolane.db";
+// src-tauri/src/lib.rs の開発ビルド用 DB_URL と合わせる（本番用 DB は削除しない）
+const DB_NAME = "mementolane-dev.db";
 
 // Windows の npm.cmd はシェルなしで起動できないため、npm run が設定する
 // npm_execpath (npm-cli.js) を node で直接実行してシェルを経由しないようにする

@@ -2,6 +2,18 @@
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
+// 開発ビルドと本番ビルドで DB ファイルを分ける
+#[cfg(debug_assertions)]
+const DB_URL: &str = "sqlite:mementolane-dev.db";
+#[cfg(not(debug_assertions))]
+const DB_URL: &str = "sqlite:mementolane.db";
+
+// フロントエンドが接続する DB をビルド種別に合わせるため、URL を返す
+#[tauri::command]
+fn db_url() -> &'static str {
+    DB_URL
+}
+
 fn migrations() -> Vec<Migration> {
     vec![
         Migration {
@@ -36,9 +48,10 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_sql::Builder::default()
-                .add_migrations("sqlite:mementolane.db", migrations())
+                .add_migrations(DB_URL, migrations())
                 .build(),
         )
+        .invoke_handler(tauri::generate_handler![db_url])
         .setup(|app| {
             // 開発ビルドのときだけ、起動時にdevtoolsを開く
             #[cfg(debug_assertions)]
