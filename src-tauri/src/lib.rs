@@ -44,7 +44,7 @@ fn migrations() -> Vec<Migration> {
             description: "実績時間テーブルの追加",
             sql: "CREATE TABLE actuals(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT NOT NULL,
+                date TEXT NOT NULL CHECK (date IS date(date)),
                 slot INTEGER NOT NULL CHECK (slot BETWEEN 0 AND 47),
                 task_id INTEGER NOT NULL,
                 UNIQUE(date, slot)
