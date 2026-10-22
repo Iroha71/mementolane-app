@@ -45,20 +45,12 @@ fn migrations() -> Vec<Migration> {
             sql: "CREATE TABLE actuals(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date TEXT NOT NULL,
-                slot INTEGER NOT NULL,
-                task_id INTEGER NOT NULL
+                slot INTEGER NOT NULL CHECK (slot BETWEEN 0 AND 47),
+                task_id INTEGER NOT NULL,
+                UNIQUE(date, slot)
             );",
             kind: MigrationKind::Up,
         },
-        Migration {
-            version: 4,
-            description: "実績時間のサンプルデータ追加",
-            sql: "INSERT INTO actuals (date, slot, task_id) VALUES
-            ('2026-10-21', 1, 1),
-            ('2026-10-28', 2, 1),
-            ('2026-11-30', 5, 2);",
-            kind: MigrationKind::Up,
-        }
     ]
 }
 
