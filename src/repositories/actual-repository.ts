@@ -30,6 +30,6 @@ export async function getActualsInWeek(
       throw new Error(`不正な形式のデータがあります\n${z.prettifyError(err)}`);
     }
 
-    throw new Error(`不明なエラーが発生しました\n${err}`);
+    throw err;
   }
 }
