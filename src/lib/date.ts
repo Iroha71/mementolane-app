@@ -13,3 +13,13 @@ export function formatDateWithWeekday(value: string): string {
   const dd = String(date.getDate()).padStart(2, "0");
   return `${mm}/${dd} (${WEEKDAYS[date.getDay()]})`;
 }
+
+/**
+ * Date をローカル日付の "YYYY-MM-DD" 形式に変換する
+ */
+export function formatISODate(date: Date): string {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
