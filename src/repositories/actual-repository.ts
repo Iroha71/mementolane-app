@@ -18,7 +18,7 @@ export async function getActualsInWeek(
   const nextSunDay = new Date(sunDay);
   nextSunDay.setDate(sunDay.getDate() + 7);
   const actuals = await db.select<ActualOutput[]>(
-    "SELECT id, date, slot, task_id from actuals WHERE $1 <= date AND date < $2;",
+    "SELECT id, date, slot, task_id from actuals WHERE date >= $1 AND date < $2;",
     [formatISODate(sunDay), formatISODate(nextSunDay)],
   );
 

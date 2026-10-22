@@ -52,7 +52,7 @@ fn migrations() -> Vec<Migration> {
         },
         Migration {
             version: 4,
-            description: "実績時間テーブルの追加",
+            description: "実績時間のサンプルデータ追加",
             sql: "INSERT INTO actuals (date, slot, task_id) VALUES
             ('2026-10-21', 1, 1),
             ('2026-10-28', 2, 1),
