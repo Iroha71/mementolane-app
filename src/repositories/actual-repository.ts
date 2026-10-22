@@ -3,7 +3,10 @@ import { actualOutput, ActualOutput } from "@/models/actual.model";
 import z, { ZodError } from "zod";
 
 const formatISODate = (date: Date): string => {
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 
 export async function getActualsInWeek(
@@ -24,9 +27,9 @@ export async function getActualsInWeek(
   } catch (err) {
     if (err instanceof ZodError) {
       console.error(z.treeifyError(err));
-    } else {
-      console.error(err);
+      throw new Error(`不正な形式のデータがあります\n${z.prettifyError(err)}`);
     }
-    throw new Error("不正な形式のデータがあります");
+
+    throw new Error(`不明なエラーが発生しました\n${err}`);
   }
 }

@@ -55,8 +55,8 @@ fn migrations() -> Vec<Migration> {
             description: "実績時間テーブルの追加",
             sql: "INSERT INTO actuals (date, slot, task_id) VALUES
             ('2026-10-21', 1, 1),
-            ('2026-10-28', 2, 3),
-            ('2026-11-30', 5, 6);",
+            ('2026-10-28', 2, 1),
+            ('2026-11-30', 5, 2);",
             kind: MigrationKind::Up,
         }
     ]
