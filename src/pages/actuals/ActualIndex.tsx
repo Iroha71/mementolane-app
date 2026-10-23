@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { InfoIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, InfoIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { formatDateWithWeekday, formatISODate } from "@/lib/date";
 import { ActualOutput } from "@/models/actual.model";
 import { getActualsInWeek } from "@/repositories/actual-repository";
@@ -46,21 +47,50 @@ function toCellKey(date: string, slot: number): string {
   return `${date}_${slot}`;
 }
 
+/**
+ * 基準日から指定した週数だけずらした日付を返す（例: -1 で先週、1 で来週）
+ */
+function shiftWeeks(baseDay: Date, weeks: number): Date {
+  const shifted = new Date(baseDay);
+  shifted.setDate(baseDay.getDate() + weeks * DAYS_PER_WEEK);
+  return shifted;
+}
+
 export default function ActualIndex() {
-  const [baseDay] = useState(() => new Date());
+  const [baseDay, setBaseDay] = useState(() => new Date());
   const [actuals, setActuals] = useState<ActualOutput[]>([]);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
+    // 週を連続で切り替えたとき、古い週の取得結果で上書きしないようにする
+    let ignore = false;
+
     getActualsInWeek(baseDay)
-      .then((actuals) => setActuals(actuals))
+      .then((actuals) => {
+        if (ignore) return;
+        setActuals(actuals);
+        setError("");
+      })
       .catch((e: unknown) => {
+        if (ignore) return;
         console.error(e);
         setError(
           (e instanceof Error ? e.message : String(e)) || "不明なエラー",
         );
       });
+
+    return () => {
+      ignore = true;
+    };
   }, [baseDay]);
+
+  const showPreviousWeek = () => {
+    setBaseDay((current) => shiftWeeks(current, -1));
+  };
+
+  const showNextWeek = () => {
+    setBaseDay((current) => shiftWeeks(current, 1));
+  };
 
   const weekDays = getWeekDays(baseDay);
 
@@ -126,6 +156,24 @@ export default function ActualIndex() {
             })}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center gap-2">
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label="先週を表示"
+          onClick={showPreviousWeek}
+        >
+          <ChevronLeftIcon />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label="来週を表示"
+          onClick={showNextWeek}
+        >
+          <ChevronRightIcon />
+        </Button>
       </div>
     </main>
   );
