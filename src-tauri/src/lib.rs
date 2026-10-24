@@ -38,7 +38,8 @@ fn migrations() -> Vec<Migration> {
                 task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
                 start_at TEXT NOT NULL,
                 end_at TEXT NOT NULL
-            );",
+            );
+            CREATE INDEX idx_actuals_start_at ON actuals(start_at);",
             kind: MigrationKind::Up,
         }
     ]

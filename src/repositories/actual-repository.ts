@@ -10,9 +10,9 @@ export async function getActualsByDate(date: Date): Promise<Actual[]> {
   const nextDate = new Date(start);
   nextDate.setDate(start.getDate() + 1);
   const results = await db.select<Actual[]>(
-    "SELECT actuals.id, actuals.start_at, end_at, task_id, tasks.title AS task_title \
+    "SELECT actuals.id, actuals.start_at, actuals.end_at, actuals.task_id, tasks.title AS task_title \
       from actuals INNER JOIN tasks ON actuals.task_id = tasks.id \
-      WHERE actuals.start_at >= $1 AND end_at < $2",
+      WHERE actuals.start_at >= $1 AND actuals.start_at < $2",
     [formatISODatetime(start), formatISODatetime(nextDate)],
   );
 
@@ -20,7 +20,7 @@ export async function getActualsByDate(date: Date): Promise<Actual[]> {
     return z.array(actual).parse(results);
   } catch (err) {
     if (err instanceof ZodError)
-      throw new Error(`不正なデータが存在しています\n${z.prettifyError(err)}`);
+      throw new Error(`データ形式が不正です\n${z.prettifyError(err)}`);
     throw err;
   }
 }

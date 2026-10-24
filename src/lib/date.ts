@@ -15,5 +15,5 @@ export function formatDateWithWeekday(value: string): string {
 }
 
 export function formatISODatetime(date: Date): string {
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}+09:00`;
+  return date.toISOString().replace(/\.\d{3}Z$/, "Z");
 }
