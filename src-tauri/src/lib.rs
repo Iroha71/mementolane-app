@@ -32,13 +32,15 @@ fn migrations() -> Vec<Migration> {
         },
         Migration {
             version: 2,
-            description: "サンプルデータの追加",
-            sql: "INSERT INTO tasks (title, status, start_at, due_at) VALUES
-        ('Tauriの環境構築', 'planning', '2026/01/01', '2026/10/01'),
-        ('Tailwindの導入', 'wip', '2026/10/11', '2026/10/30');
-            ",
+            description: "actualsテーブル作成",
+            sql: "CREATE TABLE actuals(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+                start_at TEXT NOT NULL,
+                end_at TEXT NOT NULL
+            );",
             kind: MigrationKind::Up,
-        },
+        }
     ]
 }
 
