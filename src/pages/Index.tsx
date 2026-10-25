@@ -5,9 +5,7 @@ import Swimlane from "@/components/task/swimlane";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import { STATUSES } from "@/consts/constValues";
-import ActualCalendar from "@/components/actual/actual-calendar";
-import { getActualsByDate } from "@/repositories/actual-repository";
-import { Actual } from "@/models/actual.model";
+import { Link } from "react-router";
 
 type ErrorInfo = { title: string; message: string } | null;
 
@@ -17,8 +15,6 @@ const toMessage = (e: unknown) =>
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [error, setError] = useState<ErrorInfo>(null);
-  const [actuals, setActuals] = useState<Actual[]>([]);
-  const [actualError, setActualError] = useState<string | null>(null);
 
   useEffect(() => {
     getTasks()
@@ -29,18 +25,6 @@ function App() {
           title: "データの読み込みに失敗しました",
           message: toMessage(e),
         });
-      });
-  }, []);
-
-  useEffect(() => {
-    getActualsByDate(new Date())
-      .then((actuals) => {
-        setActuals(actuals);
-        setActualError(null);
-      })
-      .catch((err) => {
-        console.error(err);
-        setActualError(err);
       });
   }, []);
 
@@ -70,7 +54,8 @@ function App() {
   }, [tasks]);
 
   return (
-    <main className="container h-screen">
+    <main className="container h-screen p-4">
+      <Link to="/actuals?date=2026-10-25">実績確認</Link>
       {error ? (
         <Alert className="mx-auto mb-5 w-fit">
           <InfoIcon />
@@ -78,7 +63,7 @@ function App() {
           <AlertDescription>{error.message}</AlertDescription>
         </Alert>
       ) : null}
-      <div className="flex h-screen min-h-0 flex-1 flex-row gap-4 overflow-x-auto p-4">
+      <div className="flex h-screen min-h-0 flex-1 flex-row gap-4 overflow-x-auto">
         {STATUSES.map(({ name, label, icon }) => (
           <Swimlane
             key={name}
@@ -89,9 +74,6 @@ function App() {
             onError={handleTaskError}
           />
         ))}
-      </div>
-      <div>
-        <ActualCalendar actuals={actuals} />
       </div>
     </main>
   );

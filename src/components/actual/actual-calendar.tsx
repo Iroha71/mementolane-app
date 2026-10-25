@@ -1,7 +1,18 @@
 import { Actual } from "@/models/actual.model";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { Alert, AlertTitle } from "../ui/alert";
+import { InfoIcon } from "lucide-react";
 
 interface ActualCalendarProps {
   actuals: Actual[];
+  error: string;
 }
 
 const getTimes = (): string[] => {
@@ -14,26 +25,44 @@ const getTimes = (): string[] => {
   return times;
 };
 
-export default function ActualCalendar({ actuals }: ActualCalendarProps) {
+export default function ActualCalendar({
+  actuals,
+  error,
+}: ActualCalendarProps) {
   const times = getTimes();
   const findActualInSlot = (slotNumber: number) => {
     const result = actuals.find((actual) => actual.slot === slotNumber);
     if (result !== undefined) {
-      return <td key={slotNumber}>{result.task_title}</td>;
+      return <TableCell key={slotNumber}>{result.task_title}</TableCell>;
     } else {
-      return <td key={slotNumber}></td>;
+      return <TableCell key={slotNumber}></TableCell>;
     }
   };
   return (
-    <table>
-      <tbody>
-        <tr>
-          {times.map((time) => (
-            <th key={time}>{time}</th>
-          ))}
-        </tr>
-        <tr>{times.map((time, index) => findActualInSlot(index))}</tr>
-      </tbody>
-    </table>
+    <div>
+      {error === "" ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {times.map((time) => (
+                <TableHead key={time} className="w-[2rem]">
+                  {time}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              {times.map((_, index) => findActualInSlot(index))}
+            </TableRow>
+          </TableBody>
+        </Table>
+      ) : (
+        <Alert>
+          <InfoIcon></InfoIcon>
+          <AlertTitle>{error}</AlertTitle>
+        </Alert>
+      )}
+    </div>
   );
 }
