@@ -5,6 +5,9 @@ import Swimlane from "@/components/task/swimlane";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import { STATUSES } from "@/consts/constValues";
+import ActualCalendar from "@/components/actual/actual-calendar";
+import { getActualsByDate } from "@/repositories/actual-repository";
+import { Actual } from "@/models/actual.model";
 
 type ErrorInfo = { title: string; message: string } | null;
 
@@ -14,6 +17,8 @@ const toMessage = (e: unknown) =>
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [error, setError] = useState<ErrorInfo>(null);
+  const [actuals, setActuals] = useState<Actual[]>([]);
+  const [actualError, setActualError] = useState<string | null>(null);
 
   useEffect(() => {
     getTasks()
@@ -24,6 +29,18 @@ function App() {
           title: "データの読み込みに失敗しました",
           message: toMessage(e),
         });
+      });
+  }, []);
+
+  useEffect(() => {
+    getActualsByDate(new Date())
+      .then((actuals) => {
+        setActuals(actuals);
+        setActualError(null);
+      })
+      .catch((err) => {
+        console.error(err);
+        setActualError(err);
       });
   }, []);
 
@@ -72,6 +89,9 @@ function App() {
             onError={handleTaskError}
           />
         ))}
+      </div>
+      <div>
+        <ActualCalendar actuals={actuals} />
       </div>
     </main>
   );
