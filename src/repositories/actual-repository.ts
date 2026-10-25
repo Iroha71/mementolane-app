@@ -10,9 +10,9 @@ export async function getActualsByDate(date: Date): Promise<Actual[]> {
   const nextDate = new Date(start);
   nextDate.setDate(start.getDate() + 1);
   const results = await db.select<Actual[]>(
-    "SELECT actuals.id, actuals.start_at, actuals.end_at, actuals.task_id, tasks.title AS task_title \
+    "SELECT actuals.id, actuals.record_at, actuals.slot, actuals.task_id, tasks.title AS task_title \
       from actuals INNER JOIN tasks ON actuals.task_id = tasks.id \
-      WHERE actuals.start_at >= $1 AND actuals.start_at < $2",
+      WHERE actuals.record_at >= $1 AND actuals.record_at < $2",
     [formatISODatetime(start), formatISODatetime(nextDate)],
   );
 

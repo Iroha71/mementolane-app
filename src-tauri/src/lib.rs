@@ -36,10 +36,9 @@ fn migrations() -> Vec<Migration> {
             sql: "CREATE TABLE actuals(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
-                start_at TEXT NOT NULL,
-                end_at TEXT NOT NULL
-            );
-            CREATE INDEX idx_actuals_start_at ON actuals(start_at);",
+                record_at TEXT NOT NULL,
+                slot INTEGER NOT NULL CHECK(slot >= 0 AND slot < 48)
+            );",
             kind: MigrationKind::Up,
         }
     ]
