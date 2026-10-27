@@ -45,7 +45,7 @@ export default function ActualIndex() {
       <h1>{viewDay}</h1>
       <ActualCalendar actuals={actuals} error={error} />
 
-      <Table className="w-[30rem]">
+      <Table className="w-120">
         <TableHeader>
           <TableRow>
             <TableHead>タスクID</TableHead>
@@ -54,7 +54,7 @@ export default function ActualIndex() {
         </TableHeader>
         <TableBody>
           {tasks.map((task) => (
-            <TableRow>
+            <TableRow key={task.id}>
               <TableCell>{task.id}</TableCell>
               <TableCell>{task.title}</TableCell>
             </TableRow>

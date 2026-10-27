@@ -33,9 +33,15 @@ export default function ActualCalendar({
   const findActualInSlot = (slotNumber: number) => {
     const result = actuals.find((actual) => actual.slot === slotNumber);
     if (result !== undefined) {
-      return <TableCell key={slotNumber}>{result.task_title}</TableCell>;
+      return (
+        <TableCell key={slotNumber} className="border">
+          {result.task_title}
+        </TableCell>
+      );
     } else {
-      return <TableCell key={slotNumber}></TableCell>;
+      return (
+        <TableCell key={slotNumber} className="border bg-amber-50"></TableCell>
+      );
     }
   };
   return (
@@ -45,14 +51,14 @@ export default function ActualCalendar({
           <TableHeader>
             <TableRow>
               {times.map((time) => (
-                <TableHead key={time} className="w-[2rem]">
+                <TableHead key={time} className="w-[2rem] border">
                   {time}
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
+            <TableRow className="h-8">
               {times.map((_, index) => findActualInSlot(index))}
             </TableRow>
           </TableBody>
