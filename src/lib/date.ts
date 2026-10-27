@@ -17,3 +17,13 @@ export function formatDateWithWeekday(value: string): string {
 export function formatISODatetime(date: Date): string {
   return date.toISOString().replace(/\.\d{3}Z$/, "Z");
 }
+
+const localDateFormatter = new Intl.DateTimeFormat("ja-JP", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+export function formatLocalDate(date: Date): string {
+  return localDateFormatter.format(date);
+}
