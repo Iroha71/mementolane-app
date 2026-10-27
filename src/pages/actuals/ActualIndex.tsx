@@ -1,6 +1,6 @@
 import ActualCalendar from "@/components/actual/actual-calendar";
 import { Alert } from "@/components/ui/alert";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -53,7 +53,7 @@ export default function ActualIndex() {
 
   return (
     <main className="p-4">
-      {error ?? <Alert>{error}</Alert>}
+      {error && <Alert>{error}</Alert>}
       <div className="mb-4 flex flex-row gap-4">
         <Button onClick={() => addSelectedDate(-1)}>
           <ArrowBigLeft />
