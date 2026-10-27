@@ -1,5 +1,11 @@
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
+export function getToday(): Date {
+  const today = new Date();
+  today.setHours(0, 0, 0);
+  return today;
+}
+
 /**
  * "YYYY/MM/DD" 形式の文字列を "MM/dd (曜日)" 形式に変換する
  */
@@ -14,14 +20,11 @@ export function formatDateWithWeekday(value: string): string {
   return `${mm}/${dd} (${WEEKDAYS[date.getDay()]})`;
 }
 
-export function formatISODatetime(date: Date): string {
-  return date.toISOString().replace(/\.\d{3}Z$/, "Z");
-}
-
 const localDateFormatter = new Intl.DateTimeFormat("ja-JP", {
   year: "numeric",
   month: "2-digit",
   day: "2-digit",
+  weekday: "short",
 });
 
 export function formatLocalDate(date: Date): string {
@@ -36,21 +39,4 @@ export function formatDateParam(date: Date): string {
   const mm = String(date.getMonth() + 1).padStart(2, "0");
   const dd = String(date.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
-}
-
-/**
- * "YYYY-MM-DD" 形式の文字列をローカル時刻の 0:00 として Date に変換する
- */
-export function parseDateParam(value: string): Date {
-  const [y, m, d] = value.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
-
-/**
- * 日数を加算した新しい Date を返す（元の Date は変更しない）
- */
-export function addDays(date: Date, days: number): Date {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
 }
