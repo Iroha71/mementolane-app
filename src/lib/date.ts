@@ -2,7 +2,7 @@ const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
 export function getToday(): Date {
   const today = new Date();
-  today.setHours(0, 0, 0);
+  today.setHours(0, 0, 0, 0);
   return today;
 }
 
