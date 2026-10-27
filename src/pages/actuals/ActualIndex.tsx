@@ -53,7 +53,7 @@ export default function ActualIndex() {
 
   return (
     <main className="p-4">
-      {error && <Alert>{error}</Alert>}
+      {error && <Alert>{error.toString()}</Alert>}
       <div className="mb-4 flex flex-row gap-4">
         <Button onClick={() => addSelectedDate(-1)}>
           <ArrowBigLeft />
@@ -68,7 +68,7 @@ export default function ActualIndex() {
       <ActualCalendar actuals={actuals} error={error} />
 
       <div className="mt-4 flex flex-col gap-4">
-        <Table className="w-120">
+        <Table className="w-[30rem]">
           <TableHeader>
             <TableRow>
               <TableHead>タスクID</TableHead>

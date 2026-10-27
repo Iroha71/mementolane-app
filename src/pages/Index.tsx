@@ -54,7 +54,7 @@ function App() {
   }, [tasks]);
 
   return (
-    <main className="container flex-col p-4">
+    <main className="container flex flex-col p-4">
       <Link to="/actuals">実績確認</Link>
       {error ? (
         <Alert className="mx-auto mb-5 w-fit">
