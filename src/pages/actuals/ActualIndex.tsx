@@ -16,6 +16,7 @@ import { getActualsByDate } from "@/repositories/actual-repository";
 import { getTasks } from "@/repositories/task-repository";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 export default function ActualIndex() {
   const [actuals, setActuals] = useState<Actual[]>([]);
@@ -66,22 +67,29 @@ export default function ActualIndex() {
       </div>
       <ActualCalendar actuals={actuals} error={error} />
 
-      <Table className="mt-4 w-120">
-        <TableHeader>
-          <TableRow>
-            <TableHead>タスクID</TableHead>
-            <TableHead>タスク名</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {tasks.map((task) => (
-            <TableRow key={task.id}>
-              <TableCell>{task.id}</TableCell>
-              <TableCell>{task.title}</TableCell>
+      <div className="mt-4 flex flex-col gap-4">
+        <Table className="w-120">
+          <TableHeader>
+            <TableRow>
+              <TableHead>タスクID</TableHead>
+              <TableHead>タスク名</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {tasks.map((task) => (
+              <TableRow key={task.id}>
+                <TableCell>{task.id}</TableCell>
+                <TableCell>{task.title}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <div>
+          <Link to="/" className="text-fg-brand mt-4 hover:underline">
+            タスク一覧へ戻る
+          </Link>
+        </div>
+      </div>
     </main>
   );
 }
