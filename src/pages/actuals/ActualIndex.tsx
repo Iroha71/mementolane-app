@@ -11,7 +11,7 @@ import { Actual } from "@/models/actual.model";
 import { Task } from "@/models/task.model";
 import { getActualsByDate } from "@/repositories/actual-repository";
 import { getTasks } from "@/repositories/task-repository";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 
 export default function ActualIndex() {
@@ -21,7 +21,7 @@ export default function ActualIndex() {
   const [searchParams] = useSearchParams();
   const viewDay = searchParams.get("date");
 
-  useState(() => {
+  useEffect(() => {
     const date = viewDay ? new Date(viewDay) : new Date();
     getActualsByDate(date)
       .then((actuals) => {
@@ -29,7 +29,7 @@ export default function ActualIndex() {
         setError("");
       })
       .catch((err) => setError(err));
-  });
+  }, []);
 
   useState(() => {
     getTasks({ includeCompleted: true })
