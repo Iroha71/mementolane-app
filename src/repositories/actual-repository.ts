@@ -12,7 +12,8 @@ export async function getActualsByDate(date: Date): Promise<Actual[]> {
   const results = await db.select<Actual[]>(
     "SELECT actuals.id, actuals.record_at, actuals.slot, actuals.task_id, tasks.title AS task_title \
       from actuals INNER JOIN tasks ON actuals.task_id = tasks.id \
-      WHERE actuals.record_at >= $1 AND actuals.record_at < $2",
+      WHERE actuals.record_at >= $1 AND actuals.record_at < $2 \
+      ORDER BY actuals.slot, actuals.id",
     [start.toISOString(), nextDate.toISOString()],
   );
 
