@@ -24,6 +24,12 @@ export default function ActualIndex() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedDay, setSelectedDay] = useState<Date>(getToday());
 
+  const normalizeErrorMessage = (err: unknown): string => {
+    if (typeof err === "string") return err;
+    if (err instanceof Error) return err.message;
+    return "不明なエラーが発生しました";
+  };
+
   useEffect(() => {
     getActualsByDate(selectedDay)
       .then((actuals) => {
@@ -31,7 +37,7 @@ export default function ActualIndex() {
         setError("");
       })
       .catch((err) => {
-        setError(err);
+        setError(normalizeErrorMessage(err));
         console.error(err);
       });
   }, [selectedDay]);
@@ -41,7 +47,7 @@ export default function ActualIndex() {
       .then((tasks) => setTasks(tasks))
       .catch((err) => {
         console.error(err);
-        setError(err);
+        setError(normalizeErrorMessage(err));
       });
   }, []);
 
