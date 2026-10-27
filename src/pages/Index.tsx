@@ -63,7 +63,7 @@ function App() {
           <AlertDescription>{error.message}</AlertDescription>
         </Alert>
       ) : null}
-      <div className="flex h-screen min-h-0 flex-1 flex-row gap-4 overflow-x-auto">
+      <div className="flex min-h-0 flex-1 flex-row gap-4 overflow-x-auto">
         {STATUSES.map(({ name, label, icon }) => (
           <Swimlane
             key={name}
