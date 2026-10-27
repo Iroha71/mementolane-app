@@ -58,7 +58,7 @@ export default function ActualCalendar({
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow className="h-8">
+            <TableRow className="h-10">
               {times.map((_, index) => findActualInSlot(index))}
             </TableRow>
           </TableBody>
