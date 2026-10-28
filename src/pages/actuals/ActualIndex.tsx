@@ -82,6 +82,7 @@ export default function ActualIndex() {
         selectedTaskId,
       );
       setActuals(result);
+      setActualsError("");
     } catch (err) {
       if (err instanceof Error) {
         setActualsError(err.message);
