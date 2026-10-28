@@ -74,7 +74,11 @@ export default function ActualIndex() {
           翌日
         </Button>
       </div>
-      <ActualCalendar actuals={actuals} error={actualsError} />
+      <ActualCalendar
+        actuals={actuals}
+        error={actualsError}
+        onUpdateSlot={(slot) => setSelectedTaskId(slot)}
+      />
 
       <div className="mt-4 flex flex-col gap-4">
         {tasksError && <Alert>{tasksError}</Alert>}
