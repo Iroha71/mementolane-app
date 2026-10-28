@@ -46,8 +46,16 @@ export default function ActualCalendar({
       return (
         <TableCell
           key={slotNumber}
+          role="button"
+          tabIndex={0}
           className="border"
           onClick={() => onUpdateSlot(slotNumber)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onUpdateSlot(slotNumber);
+            }
+          }}
         >
           {result.task_title}
         </TableCell>
