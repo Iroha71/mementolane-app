@@ -20,8 +20,9 @@ import { Link } from "react-router";
 
 export default function ActualIndex() {
   const [actuals, setActuals] = useState<Actual[]>([]);
-  const [error, setError] = useState<string>("");
+  const [actualsError, setActualsError] = useState<string>("");
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasksError, setTasksError] = useState<string>("");
   const [selectedDay, setSelectedDay] = useState<Date>(getToday());
 
   const normalizeErrorMessage = (err: unknown): string => {
@@ -34,20 +35,23 @@ export default function ActualIndex() {
     getActualsByDate(selectedDay)
       .then((actuals) => {
         setActuals(actuals);
-        setError("");
+        setActualsError("");
       })
       .catch((err) => {
-        setError(normalizeErrorMessage(err));
+        setActualsError(normalizeErrorMessage(err));
         console.error(err);
       });
   }, [selectedDay]);
 
   useEffect(() => {
     getTasks({ includeCompleted: true })
-      .then((tasks) => setTasks(tasks))
+      .then((tasks) => {
+        setTasks(tasks);
+        setTasksError("");
+      })
       .catch((err) => {
         console.error(err);
-        setError(normalizeErrorMessage(err));
+        setTasksError(normalizeErrorMessage(err));
       });
   }, []);
 
@@ -59,7 +63,6 @@ export default function ActualIndex() {
 
   return (
     <main className="p-4">
-      {error && <Alert>{error.toString()}</Alert>}
       <div className="mb-4 flex flex-row gap-4">
         <Button onClick={() => addSelectedDate(-1)}>
           <ArrowBigLeft />
@@ -71,9 +74,10 @@ export default function ActualIndex() {
           翌日
         </Button>
       </div>
-      <ActualCalendar actuals={actuals} error={error} />
+      <ActualCalendar actuals={actuals} error={actualsError} />
 
       <div className="mt-4 flex flex-col gap-4">
+        {tasksError && <Alert>{tasksError}</Alert>}
         <Table className="w-[30rem]">
           <TableHeader>
             <TableRow>
