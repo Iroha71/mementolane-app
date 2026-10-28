@@ -5,6 +5,7 @@ import Swimlane from "@/components/task/swimlane";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import { STATUSES } from "@/consts/constValues";
+import { Link } from "react-router";
 
 type ErrorInfo = { title: string; message: string } | null;
 
@@ -53,7 +54,8 @@ function App() {
   }, [tasks]);
 
   return (
-    <main className="container h-screen">
+    <main className="container flex h-screen flex-col p-4">
+      <Link to="/actuals">実績確認</Link>
       {error ? (
         <Alert className="mx-auto mb-5 w-fit">
           <InfoIcon />
@@ -61,7 +63,7 @@ function App() {
           <AlertDescription>{error.message}</AlertDescription>
         </Alert>
       ) : null}
-      <div className="flex h-screen min-h-0 flex-1 flex-row gap-4 overflow-x-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-row gap-4 overflow-x-auto">
         {STATUSES.map(({ name, label, icon }) => (
           <Swimlane
             key={name}
