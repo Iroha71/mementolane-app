@@ -9,3 +9,10 @@ export const actual = z.object({
 });
 
 export type Actual = z.infer<typeof actual>;
+
+export const createActual = actual.omit({
+  id: true,
+  task_title: true,
+});
+
+export type CreateActual = z.input<typeof createActual>;

@@ -13,6 +13,7 @@ import { InfoIcon } from "lucide-react";
 interface ActualCalendarProps {
   actuals: Actual[];
   error: string;
+  onUpdateSlot: (slot: number) => void;
 }
 
 const getTimes = (): string[] => {
@@ -28,6 +29,7 @@ const getTimes = (): string[] => {
 export default function ActualCalendar({
   actuals,
   error,
+  onUpdateSlot,
 }: ActualCalendarProps) {
   const times = getTimes();
   // 同じ slot が複数ある場合は、id が最も小さい（先に登録された）実績を表示する
@@ -42,13 +44,36 @@ export default function ActualCalendar({
     const result = actualBySlot.get(slotNumber);
     if (result !== undefined) {
       return (
-        <TableCell key={slotNumber} className="border">
+        <TableCell
+          key={slotNumber}
+          role="button"
+          tabIndex={0}
+          className="border"
+          onClick={() => onUpdateSlot(slotNumber)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onUpdateSlot(slotNumber);
+            }
+          }}
+        >
           {result.task_title}
         </TableCell>
       );
     } else {
       return (
-        <TableCell key={slotNumber} className="border bg-amber-50"></TableCell>
+        <TableCell
+          key={slotNumber}
+          role="button"
+          className="border bg-amber-50"
+          onClick={() => onUpdateSlot(slotNumber)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onUpdateSlot(slotNumber);
+            }
+          }}
+        ></TableCell>
       );
     }
   };

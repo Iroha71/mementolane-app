@@ -1,6 +1,7 @@
 import ActualCalendar from "@/components/actual/actual-calendar";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Table,
   TableBody,
@@ -12,7 +13,10 @@ import {
 import { formatLocalDate, getToday } from "@/lib/date";
 import { Actual } from "@/models/actual.model";
 import { Task } from "@/models/task.model";
-import { getActualsByDate } from "@/repositories/actual-repository";
+import {
+  createActualInSlot,
+  getActualsByDate,
+} from "@/repositories/actual-repository";
 import { getTasks } from "@/repositories/task-repository";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -24,6 +28,10 @@ export default function ActualIndex() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksError, setTasksError] = useState<string>("");
   const [selectedDay, setSelectedDay] = useState<Date>(getToday());
+  const [selectedTaskId, setSelectedTaskId] = useState<number | undefined>(
+    undefined,
+  );
+  const [error, setError] = useState<string>("");
 
   const normalizeErrorMessage = (err: unknown): string => {
     if (typeof err === "string") return err;
@@ -61,6 +69,27 @@ export default function ActualIndex() {
     setSelectedDay(date);
   };
 
+  const changeSlotTaskId = async (slot: number) => {
+    if (selectedTaskId === undefined) {
+      setError("タスクが選択されていません。下の表から選択してください。");
+      return;
+    }
+    setError("");
+    try {
+      const result = await createActualInSlot(
+        selectedDay.toISOString(),
+        slot,
+        selectedTaskId,
+      );
+      setActuals(result);
+      setActualsError("");
+    } catch (err) {
+      if (err instanceof Error) {
+        setActualsError(err.message);
+      }
+    }
+  };
+
   return (
     <main className="p-4">
       <div className="mb-4 flex flex-row gap-4">
@@ -74,26 +103,42 @@ export default function ActualIndex() {
           翌日
         </Button>
       </div>
-      <ActualCalendar actuals={actuals} error={actualsError} />
+      {error && <Alert>{error}</Alert>}
+      <ActualCalendar
+        actuals={actuals}
+        error={actualsError}
+        onUpdateSlot={changeSlotTaskId}
+      />
 
       <div className="mt-4 flex flex-col gap-4">
         {tasksError && <Alert>{tasksError}</Alert>}
-        <Table className="w-[30rem]">
-          <TableHeader>
-            <TableRow>
-              <TableHead>タスクID</TableHead>
-              <TableHead>タスク名</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {tasks.map((task) => (
-              <TableRow key={task.id}>
-                <TableCell>{task.id}</TableCell>
-                <TableCell>{task.title}</TableCell>
+        <RadioGroup onValueChange={setSelectedTaskId}>
+          <Table className="w-[30rem]">
+            <TableHeader>
+              <TableRow>
+                <TableHead>選択</TableHead>
+                <TableHead>タスクID</TableHead>
+                <TableHead>タスク名</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {tasks.map((task) => (
+                <TableRow key={task.id}>
+                  <TableCell>
+                    <RadioGroupItem
+                      value={String(task.id)}
+                      id={`task${task.id}`}
+                    />
+                  </TableCell>
+                  <TableCell>{task.id}</TableCell>
+                  <TableCell>
+                    <label htmlFor={`task${task.id}`}>{task.title}</label>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </RadioGroup>
         <div>
           <Link to="/" className="text-fg-brand mt-4 hover:underline">
             タスク一覧へ戻る
