@@ -37,7 +37,8 @@ fn migrations() -> Vec<Migration> {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
                 record_at TEXT NOT NULL,
-                slot INTEGER NOT NULL CHECK(slot >= 0 AND slot < 48)
+                slot INTEGER NOT NULL CHECK(slot >= 0 AND slot < 48),
+                UNIQUE(record_at, slot)
             );",
             kind: MigrationKind::Up,
         }

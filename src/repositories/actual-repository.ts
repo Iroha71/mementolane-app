@@ -39,11 +39,8 @@ export async function createActualInSlot(
     });
     const db = await getDb();
     await db.execute(
-      "DELETE FROM actuals WHERE record_at = $1 AND slot = $2;",
-      [params.record_at, params.slot],
-    );
-    await db.execute(
-      "INSERT INTO actuals(record_at, task_id, slot) VALUES($1, $2, $3);",
+      "INSERT INTO actuals(record_at, task_id, slot) VALUES($1, $2, $3) \
+        ON CONFLICT(record_at, slot) DO UPDATE SET task_id = excluded.task_id;",
       [params.record_at, params.task_id, params.slot],
     );
 
