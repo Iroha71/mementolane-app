@@ -125,7 +125,10 @@ export default function ActualIndex() {
               {tasks.map((task) => (
                 <TableRow key={task.id}>
                   <TableCell>
-                    <RadioGroupItem value={task.id} id={`task${task.id}`} />
+                    <RadioGroupItem
+                      value={String(task.id)}
+                      id={`task${task.id}`}
+                    />
                   </TableCell>
                   <TableCell>{task.id}</TableCell>
                   <TableCell>
