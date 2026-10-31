@@ -6,6 +6,25 @@ export function getToday(): Date {
   return today;
 }
 
+export const formatDate = (date: Date | null): string => {
+  if (date === null) return "";
+  if (Number.isNaN(date.getTime())) {
+    console.log(date);
+    return date.toString();
+  } else {
+    return date.toISOString();
+  }
+};
+
+export function formatWeekDay(date: Date | null): string {
+  if (date === null) return "";
+  if (Number.isNaN(date.getTime())) return date.toString();
+
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${mm}/${dd}（${WEEKDAYS[date.getDay()]}）`;
+}
+
 /**
  * "YYYY/MM/DD" 形式の文字列を "MM/dd (曜日)" 形式に変換する
  */

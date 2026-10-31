@@ -7,14 +7,22 @@ export function useTaskList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
+  const fetchTasks = async () => {
     setIsLoading(true);
     setError(undefined);
-    getAllTasks(false)
-      .then((_tasks) => setTasks(_tasks))
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
+    try {
+      setTasks(await getAllTasks(false));
+    } catch (err) {
+      console.error(err);
+      setError(String(err));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
   }, []);
 
-  return { tasks, isLoading, error };
+  return { tasks, isLoading, error, fetchTasks };
 }

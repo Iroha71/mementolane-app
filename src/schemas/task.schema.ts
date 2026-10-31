@@ -13,7 +13,7 @@ export type TaskSchema = z.infer<typeof taskSchema>;
 export interface Task {
   id: number;
   title: string;
-  status: string;
+  status: "planning" | "thisweek" | "wip" | "reviewing" | "delivering";
   startAt: Date | null;
   dueAt: Date | null;
   completed: boolean;

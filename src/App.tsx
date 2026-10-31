@@ -3,9 +3,11 @@ import Index from "./pages/Index";
 
 function App() {
   return (
-    <Routes>
-      <Route index element={<Index />} />
-    </Routes>
+    <div className="p-4">
+      <Routes>
+        <Route index element={<Index />} />
+      </Routes>
+    </div>
   );
 }
 

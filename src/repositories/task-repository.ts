@@ -28,9 +28,14 @@ export async function getAllTasks(isActiveOnly: boolean): Promise<Task[]> {
   const sql = isActiveOnly
     ? "SELECT * FROM tasks WHERE completed = 0;"
     : "SELECT * FROM tasks;";
-  const rows = await db.select<TaskRow[]>(sql);
-
-  return rows.map((row) => toTask(row));
+  try {
+    const rows = await db.select<TaskRow[]>(sql);
+    const tasks = rows.map((row) => toTask(row));
+    return tasks;
+  } catch (err) {
+    console.error(err);
+    throw new Error("読み込みに失敗しました。画面を再度読み込んでください。");
+  }
 }
 
 // export async function getTasks({
