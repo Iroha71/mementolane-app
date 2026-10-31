@@ -1,43 +1,31 @@
 import { getDb } from "@/lib/db";
 import { Task } from "@/schemas/task.schema";
 
-interface TaskRow {
-  id: number;
-  title: string;
-  status: string;
-  start_at: string | null;
-  due_at: string | null;
-  completed: number;
-  created_at: string;
-}
-
-export function toTask(row: TaskRow): Task {
-  return {
-    id: row.id,
-    title: row.title,
-    status: row.status,
-    startAt: row.start_at === null ? null : new Date(row.start_at),
-    dueAt: row.due_at === null ? null : new Date(row.due_at),
-    completed: row.completed === 0 ? false : true,
-    createdAt: new Date(row.created_at),
-  };
-}
-
 export async function getAllTasks(isActiveOnly: boolean): Promise<Task[]> {
-  const db = await getDb();
   const sql = isActiveOnly
     ? "SELECT * FROM tasks WHERE completed = 0;"
     : "SELECT * FROM tasks;";
-  try {
-    const rows = await db.select<TaskRow[]>(sql);
-    const tasks = rows.map((row) => toTask(row));
-    return tasks;
-  } catch (err) {
-    console.error(err);
-    throw new Error("読み込みに失敗しました。画面を再度読み込んでください。");
-  }
+  const db = await getDb();
+
+  return await db.select<Task[]>(sql);
 }
 
+export async function insertTask(
+  title: string,
+  status: Task["status"],
+  start_at: string | null,
+  due_at: string | null,
+): Promise<{ success: boolean }> {
+  const db = await getDb();
+  const result = await db.execute(
+    "INSERT INTO tasks(title, status, start_at, due_at) VALUES($1, $2, $3, $4);",
+    [title, status, start_at, due_at],
+  );
+
+  return {
+    success: result.lastInsertId !== undefined && result.lastInsertId > 0,
+  };
+}
 // export async function getTasks({
 //   includeCompleted = false,
 // }: { includeCompleted?: boolean } = {}): Promise<Task[]> {

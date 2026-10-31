@@ -9,7 +9,6 @@ import {
 } from "../ui/card";
 import StatusIcon from "./status-icon";
 import TaskTicket from "./task-ticket";
-import { Button } from "../ui/button";
 import { Link } from "react-router";
 
 interface SwimlaneProps {

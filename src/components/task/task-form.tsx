@@ -10,25 +10,22 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router";
-import z from "zod";
-import { task } from "@/models/task.model";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { STATUSES } from "@/consts/constValues";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { Task } from "@/schemas/task.schema";
+import { Task, TaskInput, taskInputSchema } from "@/schemas/task.schema";
+import { $ZodFlattenedError } from "zod/v4/core";
+
+export type TaskFieldErrors = $ZodFlattenedError<TaskInput>["fieldErrors"];
 
 interface TaskFormProps {
   defaultStatus: Task["status"];
-  onSubmit: (values: TaskFormRequest) => void | Promise<void>;
+  /** 項目ごとのエラーを返すと、該当する項目の下に表示する */
+  onSubmit: (
+    values: TaskInput,
+  ) => void | TaskFieldErrors | null | Promise<void | TaskFieldErrors | null>;
 }
-
-export const taskFormRequest = task.omit({
-  id: true,
-  created_at: true,
-});
-export type TaskFormRequest = z.infer<typeof taskFormRequest>;
-
 const RequireMark = (): React.JSX.Element => {
   return <span className="text-red-600">*</span>;
 };
@@ -42,22 +39,37 @@ export default function TaskForm({
     register,
     control,
     handleSubmit,
+    setError,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<TaskFormRequest>({
-    resolver: zodResolver(taskFormRequest),
+  } = useForm<TaskInput>({
+    resolver: zodResolver(taskInputSchema),
     mode: "onChange",
     defaultValues: {
       title: "",
-      start_at: "",
-      due_at: "",
+      start_at: null,
+      due_at: null,
       status: defaultStatus,
       completed: 0,
     },
   });
 
+  const submit = async (values: TaskInput) => {
+    const fieldErrors = await onSubmit(values);
+    if (!fieldErrors) return;
+
+    for (const [name, messages] of Object.entries(fieldErrors) as [
+      keyof TaskInput,
+      string[] | undefined,
+    ][]) {
+      if (messages?.[0]) {
+        setError(name, { type: "server", message: messages[0] });
+      }
+    }
+  };
+
   return (
     <div className="w-full max-w-[30rem]">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(submit)}>
         <FieldGroup>
           <FieldSet>
             <FieldLegend>タスクを作成</FieldLegend>
@@ -86,9 +98,7 @@ export default function TaskForm({
                       onValueChange={(groupValue) => {
                         // 選択中の項目を再度押すと空配列になるため、選択を維持する
                         if (groupValue.length === 0) return;
-                        field.onChange(
-                          groupValue[0] as TaskFormRequest["status"],
-                        );
+                        field.onChange(groupValue[0] as TaskInput["status"]);
                       }}
                       variant="outline"
                       size="lg"
@@ -124,7 +134,7 @@ export default function TaskForm({
             </FieldGroup>
           </FieldSet>
           <Field orientation="horizontal" className="flex justify-center">
-            <Button type="submit" disabled={!isValid || isSubmitting}>
+            <Button type="submit" disabled={isSubmitting || !isValid}>
               登録する
             </Button>
             <Button

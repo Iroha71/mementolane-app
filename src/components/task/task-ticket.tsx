@@ -37,14 +37,14 @@ export default function TaskTicket({ task }: TaskTicketProps) {
           <Clock className="size-4" />
           <label>開始日: </label>
           <span className="font-bold">
-            {task.startAt ? formatWeekDay(task.startAt) : "---"}
+            {task.start_at ? formatWeekDay(task.start_at) : "---"}
           </span>
         </p>
         <p className="flex items-center gap-2 text-base">
           <Hourglass className="size-4" />
           <label>期限日: </label>
           <span className="font-bold">
-            {task.dueAt ? formatWeekDay(task.dueAt) : "---"}
+            {task.due_at ? formatWeekDay(task.due_at) : "---"}
           </span>
         </p>
       </CardContent>

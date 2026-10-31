@@ -16,13 +16,13 @@ export const formatDate = (date: Date | null): string => {
   }
 };
 
-export function formatWeekDay(date: Date | null): string {
-  if (date === null) return "";
-  if (Number.isNaN(date.getTime())) return date.toString();
+export function formatWeekDay(date: string): string {
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) return date;
 
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${mm}/${dd}（${WEEKDAYS[date.getDay()]}）`;
+  const mm = String(parsedDate.getMonth() + 1).padStart(2, "0");
+  const dd = String(parsedDate.getDate()).padStart(2, "0");
+  return `${mm}/${dd}（${WEEKDAYS[parsedDate.getDay()]}）`;
 }
 
 /**
