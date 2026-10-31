@@ -1,8 +1,16 @@
 import { StatusGroup } from "@/consts/constValues";
 import { Task } from "@/schemas/task.schema";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import StatusIcon from "./status-icon";
 import TaskTicket from "./task-ticket";
+import { Button } from "../ui/button";
+import { Link } from "react-router";
 
 interface SwimlaneProps {
   status: StatusGroup;
@@ -31,6 +39,11 @@ export default function Swimlane({
             onToggleCompleted={onToggleCompleted}
           />
         ))}
+        <CardAction>
+          <Link to={`/tasks/create?defaultStatus=${status.name}`}>
+            ＋タスク作成
+          </Link>
+        </CardAction>
       </CardContent>
     </Card>
   );

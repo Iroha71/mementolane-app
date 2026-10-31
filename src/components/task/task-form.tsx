@@ -16,8 +16,10 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { STATUSES } from "@/consts/constValues";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { Task } from "@/schemas/task.schema";
 
 interface TaskFormProps {
+  defaultStatus: Task["status"];
   onSubmit: (values: TaskFormRequest) => void | Promise<void>;
 }
 
@@ -32,6 +34,7 @@ const RequireMark = (): React.JSX.Element => {
 };
 
 export default function TaskForm({
+  defaultStatus,
   onSubmit,
 }: TaskFormProps): React.JSX.Element {
   const navigate = useNavigate();
@@ -47,7 +50,7 @@ export default function TaskForm({
       title: "",
       start_at: "",
       due_at: "",
-      status: "planning",
+      status: defaultStatus,
       completed: 0,
     },
   });
@@ -78,6 +81,7 @@ export default function TaskForm({
                   control={control}
                   render={({ field }) => (
                     <ToggleGroup
+                      defaultValue={[defaultStatus]}
                       value={[field.value]}
                       onValueChange={(groupValue) => {
                         // 選択中の項目を再度押すと空配列になるため、選択を維持する
