@@ -10,8 +10,8 @@ import {
 
 function App() {
   return (
-    <div className="h-screen">
-      <header className="w-screen bg-lime-600 p-2">
+    <div className="flex h-screen flex-col">
+      <header className="w-full bg-lime-600 p-2">
         <NavigationMenu>
           <NavigationMenuList className="gap-4">
             <NavigationMenuItem>MementoLane</NavigationMenuItem>
@@ -19,7 +19,7 @@ function App() {
           </NavigationMenuList>
         </NavigationMenu>
       </header>
-      <div className="flex flex-col">
+      <div className="flex flex-1 flex-col">
         <div className="flex-1 overflow-y-auto p-4">
           <Routes>
             <Route index element={<Index />} />
