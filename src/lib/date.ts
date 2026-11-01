@@ -1,42 +1,24 @@
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
-export function getToday(): Date {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return today;
-}
-
-/**
- * "YYYY/MM/DD" 形式の文字列を "MM/dd (曜日)" 形式に変換する
- */
-export function formatDateWithWeekday(value: string): string {
-  const date = new Date(value);
+export const formatDate = (date: Date | null): string => {
+  if (date === null) return "";
   if (Number.isNaN(date.getTime())) {
-    return value;
+    console.log(date);
+    return date.toString();
+  } else {
+    // toISOString() は UTC に換算されて日付がずれるため、ローカル時刻の年月日から組み立てる
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
   }
+};
 
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${mm}/${dd} (${WEEKDAYS[date.getDay()]})`;
-}
+export function formatWeekDay(date: string): string {
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) return date;
 
-const localDateFormatter = new Intl.DateTimeFormat("ja-JP", {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  weekday: "short",
-});
-
-export function formatLocalDate(date: Date): string {
-  return localDateFormatter.format(date);
-}
-
-/**
- * ローカル時刻の "YYYY-MM-DD" 形式に変換する（URL パラメータ用）
- */
-export function formatDateParam(date: Date): string {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
+  const mm = String(parsedDate.getMonth() + 1).padStart(2, "0");
+  const dd = String(parsedDate.getDate()).padStart(2, "0");
+  return `${mm}/${dd}（${WEEKDAYS[parsedDate.getDay()]}）`;
 }

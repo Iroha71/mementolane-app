@@ -1,52 +1,52 @@
-import { Task } from "@/models/task.model";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import TaskCard from "./task-card";
-import { LucideIcon, PlusIcon } from "lucide-react";
-import { Button } from "../ui/button";
-import { useNavigate } from "react-router";
+import { StatusGroup } from "@/consts/constValues";
+import { Task } from "@/schemas/task.schema";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import StatusIcon from "./status-icon";
+import TaskTicket from "./task-ticket";
+import { Link } from "react-router";
+import { buttonVariants } from "../ui/button";
 
 interface SwimlaneProps {
-  label: string;
-  icon: LucideIcon;
+  status: StatusGroup;
   tasks: Task[];
-  onTaskUpdate: (task: Task) => void;
-  onError: (message: string) => void;
+  onToggleCompleted: (completed: boolean) => void;
 }
 
 export default function Swimlane({
-  label,
-  icon: Icon,
+  status,
   tasks,
-  onTaskUpdate,
-  onError,
+  onToggleCompleted,
 }: SwimlaneProps) {
-  let navigate = useNavigate();
-
   return (
-    <Card className="w-[22rem] shrink-0 [--card-spacing:--spacing(2)]">
+    <Card className="w-[20rem] shrink-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Icon className="size-4" />
-          {label}
-          <Button variant="link" onClick={() => navigate("/task/create")}>
-            <PlusIcon />
-            タスクを作成
-          </Button>
+          <StatusIcon status={status.name} />
+          {status.label}
         </CardTitle>
       </CardHeader>
-      <CardContent className="min-h-0 flex-1 overflow-y-auto">
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onUpdated={onTaskUpdate}
-              onError={onError}
-            />
-          ))
-        ) : (
-          <p>タスクはありません</p>
-        )}
+      <CardContent>
+        {tasks.map((task) => (
+          <TaskTicket
+            key={task.id}
+            task={task}
+            onToggleCompleted={onToggleCompleted}
+          />
+        ))}
+        <CardAction>
+          <Link
+            to={`/tasks/create?defaultStatus=${status.name}`}
+            className={buttonVariants({ variant: "link" })}
+          >
+            ＋タスク作成
+          </Link>
+        </CardAction>
       </CardContent>
     </Card>
   );

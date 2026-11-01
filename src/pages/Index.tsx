@@ -1,82 +1,34 @@
-import { useEffect, useMemo, useState } from "react";
-import { Task } from "@/models/task.model";
-import { getTasks } from "@/repositories/task-repository";
 import Swimlane from "@/components/task/swimlane";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
 import { STATUSES } from "@/consts/constValues";
+import { useTaskList } from "@/hooks/tasks/useTaskList";
 import { Link } from "react-router";
+import { buttonVariants } from "@/components/ui/button";
 
-type ErrorInfo = { title: string; message: string } | null;
-
-const toMessage = (e: unknown) =>
-  (e instanceof Error ? e.message : String(e)) || "不明なエラー";
-
-function App() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [error, setError] = useState<ErrorInfo>(null);
-
-  useEffect(() => {
-    getTasks()
-      .then((tasks) => setTasks(tasks))
-      .catch((e: unknown) => {
-        console.error(e);
-        setError({
-          title: "データの読み込みに失敗しました",
-          message: toMessage(e),
-        });
-      });
-  }, []);
-
-  const handleTaskUpdated = (updated: Task) => {
-    setTasks((prev) =>
-      updated.completed === 1
-        ? prev.filter((current) => current.id !== updated.id)
-        : prev.map((current) =>
-            current.id === updated.id ? updated : current,
-          ),
-    );
-    setError(null);
-  };
-
-  const handleTaskError = (message: string) => {
-    setError({ title: "タスクの更新に失敗しました", message });
-  };
-
-  const tasksByStatus = useMemo(() => {
-    const grouped = Object.fromEntries(
-      STATUSES.map(({ name }) => [name, [] as Task[]]),
-    ) as Record<Task["status"], Task[]>;
-    for (const t of tasks) {
-      grouped[t.status].push(t);
-    }
-    return grouped;
-  }, [tasks]);
+export default function Index() {
+  const { tasks, isLoading } = useTaskList();
+  const groupedTasks = Map.groupBy(tasks, (task) => task.status);
 
   return (
-    <main className="container flex h-screen flex-col p-4">
-      <Link to="/actuals">実績確認</Link>
-      {error ? (
-        <Alert className="mx-auto mb-5 w-fit">
-          <InfoIcon />
-          <AlertTitle>{error.title}</AlertTitle>
-          <AlertDescription>{error.message}</AlertDescription>
-        </Alert>
-      ) : null}
-      <div className="flex min-h-0 flex-1 flex-row gap-4 overflow-x-auto">
-        {STATUSES.map(({ name, label, icon }) => (
-          <Swimlane
-            key={name}
-            label={label}
-            icon={icon}
-            tasks={tasksByStatus[name]}
-            onTaskUpdate={handleTaskUpdated}
-            onError={handleTaskError}
-          />
-        ))}
+    <div>
+      <div className="px-2 pt-2">
+        <Link to="/actuals" className={buttonVariants({ variant: "link" })}>
+          actual
+        </Link>
       </div>
-    </main>
+      {isLoading ? (
+        <p>読み込み中</p>
+      ) : (
+        <div className="flex h-auto flex-row gap-4 overflow-x-auto p-2">
+          {STATUSES.map((status) => (
+            <Swimlane
+              key={status.name}
+              status={status}
+              tasks={groupedTasks.get(status.name) ?? []}
+              onToggleCompleted={(completed) => console.log(completed)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
-
-export default App;
