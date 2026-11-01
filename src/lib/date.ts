@@ -12,7 +12,7 @@ export const formatDate = (date: Date | null): string => {
     console.log(date);
     return date.toString();
   } else {
-    return date.toISOString();
+    return date.toISOString().split("T")[0];
   }
 };
 
