@@ -3,7 +3,7 @@ import { getActualInDay } from "@/usecases/actuals/getActualInDay";
 import { useEffect, useState } from "react";
 
 export function useGetActuals() {
-  const [targetDay, setTargetDay] = useState<Date>(new Date());
+  const [targetDay] = useState<Date>(new Date());
   const [actuals, setActuals] = useState<Actual[]>([]);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);

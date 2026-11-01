@@ -12,6 +12,7 @@ import React from "react";
 interface ActualTimelineProps {
   actuals: Actual[];
   date: string;
+  onUpdateSlot: (slotNumber: number) => void;
 }
 
 interface TimeSlot {
@@ -34,18 +35,30 @@ const TIMES = getTimes();
 interface TaskCellProps {
   actuals: Actual[];
   slot: number;
+  onSlotClick: (slot: number) => void;
 }
 
-const TaskCell = ({ actuals, slot }: TaskCellProps): React.JSX.Element => {
+const TaskCell = ({
+  actuals,
+  slot,
+  onSlotClick,
+}: TaskCellProps): React.JSX.Element => {
   const result = actuals.find((actual) => actual.slot === slot);
   if (result !== undefined) {
-    return <TableCell>{result.task_title}</TableCell>;
+    return (
+      <TableCell onClick={() => onSlotClick(slot)}>
+        {result.task_title}
+      </TableCell>
+    );
   } else {
-    return <TableCell></TableCell>;
+    return <TableCell onClick={() => onSlotClick(slot)}></TableCell>;
   }
 };
 
-export default function ActualTimeline({ actuals }: ActualTimelineProps) {
+export default function ActualTimeline({
+  actuals,
+  onUpdateSlot,
+}: ActualTimelineProps) {
   return (
     <Table>
       <TableHeader>
@@ -58,7 +71,11 @@ export default function ActualTimeline({ actuals }: ActualTimelineProps) {
         {TIMES.map(({ index, time }) => (
           <TableRow key={index}>
             <TableCell>{time}</TableCell>
-            <TaskCell actuals={actuals} slot={index} />
+            <TaskCell
+              actuals={actuals}
+              slot={index}
+              onSlotClick={onUpdateSlot}
+            />
           </TableRow>
         ))}
       </TableBody>

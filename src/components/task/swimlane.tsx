@@ -10,6 +10,7 @@ import {
 import StatusIcon from "./status-icon";
 import TaskTicket from "./task-ticket";
 import { Link } from "react-router";
+import { buttonVariants } from "../ui/button";
 
 interface SwimlaneProps {
   status: StatusGroup;
@@ -39,7 +40,10 @@ export default function Swimlane({
           />
         ))}
         <CardAction>
-          <Link to={`/tasks/create?defaultStatus=${status.name}`}>
+          <Link
+            to={`/tasks/create?defaultStatus=${status.name}`}
+            className={buttonVariants({ variant: "link" })}
+          >
             ＋タスク作成
           </Link>
         </CardAction>

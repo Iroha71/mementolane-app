@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const actualSchema = z.object({
-  taskId: z.number().int(),
+  task_id: z.number().int(),
   task_title: z.string(),
   record_at: z.iso.date(),
   slot: z
@@ -12,3 +12,9 @@ export const actualSchema = z.object({
 });
 
 export type Actual = z.infer<typeof actualSchema>;
+
+export const actualInput = actualSchema.omit({
+  task_title: true,
+});
+
+export type ActualInput = z.input<typeof actualInput>;
