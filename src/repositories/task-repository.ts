@@ -39,8 +39,8 @@ export async function insertTask(
 export async function updateTask(id: number, task: TaskInput) {
   const db = await getDb();
   const result = await db.execute(
-    "UPDATE tasks SET title = $1, status = $2, start_at = $3, due_at = $4 WHERE id = $5;",
-    [task.title, task.status, task.start_at, task.due_at, id],
+    "UPDATE tasks SET title = $1, status = $2, start_at = $3, due_at = $4, completed = $5 WHERE id = $6;",
+    [task.title, task.status, task.start_at, task.due_at, task.completed, id],
   );
 
   return {

@@ -24,7 +24,7 @@ export default function TaskUpdate() {
 function TaskUpdateContent({ id }: { id: number }) {
   const navigate = useNavigate();
   const { task, isLoading, error } = useGetTask(id);
-  const { submitTask } = useUpdateTask(id, {
+  const { submitTask, backendError } = useUpdateTask(id, {
     onSuccess: () => navigate("/"),
   });
 
@@ -34,9 +34,13 @@ function TaskUpdateContent({ id }: { id: number }) {
     return <p className="text-center">タスクが見つかりませんでした。</p>;
   }
 
-  // TaskForm の defaultValues は最初の描画でしか読まれないため、読み込み後に描画する
   return (
     <div className="flex flex-col items-center gap-4">
+      {backendError.length > 0 && (
+        <p className="whitespace-pre-line text-center text-sm text-red-600">
+          {backendError.join("\n")}
+        </p>
+      )}
       <TaskForm
         legend="タスクを編集"
         submitLabel="更新する"
