@@ -10,6 +10,15 @@ export async function getAllTasks(isActiveOnly: boolean): Promise<Task[]> {
   return await db.select<Task[]>(sql);
 }
 
+export async function getTaskById(id: number) {
+  const db = await getDb();
+  const rows = await db.select<Task[]>("SELECT * FROM tasks WHERE id = $1;", [
+    id,
+  ]);
+
+  return rows[0] ?? null;
+}
+
 export async function insertTask(
   title: string,
   status: Task["status"],

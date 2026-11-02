@@ -14,13 +14,18 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { STATUSES } from "@/consts/constValues";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { Task, TaskInput, taskInputSchema } from "@/schemas/task.schema";
+import { TaskInput, taskInputSchema } from "@/schemas/task.schema";
 import { $ZodFlattenedError } from "zod/v4/core";
 
 export type TaskFieldErrors = $ZodFlattenedError<TaskInput>["fieldErrors"];
 
 interface TaskFormProps {
-  defaultStatus: Task["status"];
+  /** 指定しなかった項目は空欄（状態は「planning」）で始まる。最初の描画でのみ読まれる */
+  defaultValues?: Partial<TaskInput>;
+  /** フォームの見出し */
+  legend?: string;
+  /** 送信ボタンの文言 */
+  submitLabel?: string;
   /** 項目ごとのエラーを返すと、該当する項目の下に表示する */
   onSubmit: (
     values: TaskInput,
@@ -31,7 +36,9 @@ const RequireMark = (): React.JSX.Element => {
 };
 
 export default function TaskForm({
-  defaultStatus,
+  defaultValues,
+  legend = "タスクを作成",
+  submitLabel = "登録する",
   onSubmit,
 }: TaskFormProps): React.JSX.Element {
   const navigate = useNavigate();
@@ -48,8 +55,9 @@ export default function TaskForm({
       title: "",
       start_at: null,
       due_at: null,
-      status: defaultStatus,
+      status: "planning",
       completed: 0,
+      ...defaultValues,
     },
   });
 
@@ -72,7 +80,7 @@ export default function TaskForm({
       <form onSubmit={handleSubmit(submit)}>
         <FieldGroup>
           <FieldSet>
-            <FieldLegend>タスクを作成</FieldLegend>
+            <FieldLegend>{legend}</FieldLegend>
             <FieldGroup>
               <Field>
                 <FieldLabel>
@@ -93,7 +101,6 @@ export default function TaskForm({
                   control={control}
                   render={({ field }) => (
                     <ToggleGroup
-                      defaultValue={[defaultStatus]}
                       value={[field.value]}
                       onValueChange={(groupValue) => {
                         // 選択中の項目を再度押すと空配列になるため、選択を維持する
@@ -135,7 +142,7 @@ export default function TaskForm({
           </FieldSet>
           <Field orientation="horizontal" className="flex justify-center">
             <Button type="submit" disabled={isSubmitting || !isValid}>
-              登録する
+              {submitLabel}
             </Button>
             <Button
               type="button"
