@@ -7,6 +7,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "./components/ui/navigation-menu";
+import TaskUpdate from "./pages/tasks/TaskUpdate";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Routes>
             <Route index element={<Index />} />
             <Route path="/tasks/create" element={<TaskCreate />} />
+            <Route path="/tasks/:id/edit" element={<TaskUpdate />} />
             <Route path="/actuals" element={<ActualIndex />} />
           </Routes>
         </div>

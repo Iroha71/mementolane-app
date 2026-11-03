@@ -8,6 +8,7 @@ import {
 } from "../ui/card";
 import { CircleCheck, Clock, Hourglass, Ticket } from "lucide-react";
 import { formatWeekDay } from "@/lib/date";
+import { Link } from "react-router";
 
 interface TaskTicketProps {
   task: Task;
@@ -18,9 +19,14 @@ export default function TaskTicket({ task }: TaskTicketProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <Ticket />
-          {task.title}
+        <CardTitle className="text-xl">
+          <Link
+            to={`/tasks/${task.id}/edit`}
+            className="flex items-center gap-2 hover:underline"
+          >
+            <Ticket />
+            {task.title}
+          </Link>
         </CardTitle>
         <CardAction>
           <button

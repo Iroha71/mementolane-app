@@ -21,7 +21,10 @@ export default function TaskCreate() {
           {backendError.join("\n")}
         </p>
       )}
-      <TaskForm defaultStatus={defaultStatus} onSubmit={submitTask} />
+      <TaskForm
+        defaultValues={{ status: defaultStatus }}
+        onSubmit={submitTask}
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/db";
-import { Task } from "@/schemas/task.schema";
+import { Task, TaskInput } from "@/schemas/task.schema";
 
 export async function getAllTasks(isActiveOnly: boolean): Promise<Task[]> {
   const sql = isActiveOnly
@@ -8,6 +8,15 @@ export async function getAllTasks(isActiveOnly: boolean): Promise<Task[]> {
   const db = await getDb();
 
   return await db.select<Task[]>(sql);
+}
+
+export async function getTaskById(id: number): Promise<Task | null> {
+  const db = await getDb();
+  const rows = await db.select<Task[]>("SELECT * FROM tasks WHERE id = $1;", [
+    id,
+  ]);
+
+  return rows[0] ?? null;
 }
 
 export async function insertTask(
@@ -24,5 +33,20 @@ export async function insertTask(
 
   return {
     success: result.lastInsertId !== undefined && result.lastInsertId > 0,
+  };
+}
+
+export async function updateTask(
+  id: number,
+  task: TaskInput,
+): Promise<{ success: boolean }> {
+  const db = await getDb();
+  const result = await db.execute(
+    "UPDATE tasks SET title = $1, status = $2, start_at = $3, due_at = $4, completed = $5 WHERE id = $6;",
+    [task.title, task.status, task.start_at, task.due_at, task.completed, id],
+  );
+
+  return {
+    success: result.rowsAffected > 0,
   };
 }
