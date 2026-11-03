@@ -6,7 +6,7 @@ type ActualValidateError = z.core.$ZodFlattenedError<
   z.output<ActualInput>
 >["fieldErrors"];
 
-export async function createActualToSlot(actual: ActualInput): Promise<{
+export async function createActualToSlotUseCase(actual: ActualInput): Promise<{
   error: ActualValidateError | null;
 }> {
   const parsedInput = actualInput.safeParse(actual);

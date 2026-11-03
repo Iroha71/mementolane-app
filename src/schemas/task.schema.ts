@@ -11,6 +11,7 @@ export const taskSchema = z.object({
   start_at: z.iso.date({ error: "日付はISO形式で入力してください" }).nullable(),
   due_at: z.iso.date({ error: "日付はISO形式で入力してください" }).nullable(),
   completed: z.union([z.literal(0), z.literal(1)]),
+  actuals: z.number({ error: "実績時間は数値で入力してください" }).default(0),
   created_at: z.iso.date({ error: "日付はISO形式で入力してください" }),
 });
 

@@ -1,7 +1,9 @@
 import { getAllTasks } from "@/repositories/task-repository";
 import { Task } from "@/schemas/task.schema";
 
-export async function getTaskList(isActivateOnly: boolean): Promise<Task[]> {
+export async function getTaskListUseCase(
+  isActivateOnly: boolean,
+): Promise<Task[]> {
   try {
     const tasks = await getAllTasks(isActivateOnly);
 

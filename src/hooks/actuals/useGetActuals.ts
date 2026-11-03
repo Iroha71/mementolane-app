@@ -1,5 +1,5 @@
 import { Actual } from "@/schemas/actual.schema";
-import { getActualInDay } from "@/usecases/actuals/getActualInDay";
+import { getActualInDayUseCase } from "@/usecases/actuals/getActualInDay";
 import { useEffect, useState } from "react";
 
 export function useGetActuals() {
@@ -11,7 +11,7 @@ export function useGetActuals() {
     try {
       setIsLoading(true);
       setError("");
-      setActuals(await getActualInDay(targetDay));
+      setActuals(await getActualInDayUseCase(targetDay));
     } catch (err) {
       if (err instanceof Error) setError(err.message);
     } finally {

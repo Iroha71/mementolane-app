@@ -1,6 +1,6 @@
 import type { TaskFieldErrors } from "@/components/task/task-form";
 import { TaskInput } from "@/schemas/task.schema";
-import { updateTask } from "@/usecases/tasks/updateTask";
+import { updateTaskUseCase } from "@/usecases/tasks/updateTask";
 import { useState } from "react";
 
 interface UseUpdateTaskProps {
@@ -20,7 +20,7 @@ export function useUpdateTask(
     setBackendError([]);
 
     try {
-      const result = await updateTask(id, input);
+      const result = await updateTaskUseCase(id, input);
       if (result.success) {
         onSuccess?.();
         return null;

@@ -1,6 +1,6 @@
 import type { TaskFieldErrors } from "@/components/task/task-form";
 import { TaskInput } from "@/schemas/task.schema";
-import { createTask } from "@/usecases/tasks/createTask";
+import { createTaskUseCase } from "@/usecases/tasks/createTask";
 import { useState } from "react";
 
 interface UseCreateTaskOptions {
@@ -17,7 +17,7 @@ export function useCreateTask({ onSuccess }: UseCreateTaskOptions = {}) {
     setBackendError([]);
 
     try {
-      const result = await createTask(task);
+      const result = await createTaskUseCase(task);
       if (result.success) {
         onSuccess?.();
         return null;

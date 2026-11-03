@@ -1,7 +1,7 @@
 import { formatDate } from "@/lib/date";
 import { getActualsByDate } from "@/repositories/actual-repository";
 
-export async function getActualInDay(targetDay: Date) {
+export async function getActualInDayUseCase(targetDay: Date) {
   const nextDay = new Date(targetDay);
   nextDay.setDate(targetDay.getDate() + 1);
   try {

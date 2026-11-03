@@ -50,3 +50,15 @@ export async function updateTask(
     success: result.rowsAffected > 0,
   };
 }
+
+export async function updateActual(taskId: number, value: number) {
+  const db = await getDb();
+  const result = await db.execute(
+    "UPDATE tasks SET actuals = $1 WHERE id = $2",
+    [value, taskId],
+  );
+
+  return {
+    success: result.rowsAffected > 0,
+  };
+}

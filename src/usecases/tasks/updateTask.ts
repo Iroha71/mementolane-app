@@ -1,9 +1,9 @@
-import { updateTask as updateTaskRepository } from "@/repositories/task-repository";
+import { updateTask } from "@/repositories/task-repository";
 import { TaskInput, taskInputSchema } from "@/schemas/task.schema";
 import z from "zod";
 import { $ZodFlattenedError } from "zod/v4/core";
 
-export async function updateTask(
+export async function updateTaskUseCase(
   id: number,
   input: TaskInput,
 ): Promise<{ success: boolean; error: $ZodFlattenedError<TaskInput> | null }> {
@@ -15,7 +15,7 @@ export async function updateTask(
   const parsedInput = result.data;
 
   try {
-    const { success } = await updateTaskRepository(id, parsedInput);
+    const { success } = await updateTask(id, parsedInput);
     if (!success) {
       return {
         success: false,

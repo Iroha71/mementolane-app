@@ -41,7 +41,13 @@ fn migrations() -> Vec<Migration> {
                 UNIQUE(record_at, slot)
             );",
             kind: MigrationKind::Up,
-        }
+        },
+        Migration {
+            version: 3,
+            description: "tasksテーブルにactuals列を追加",
+            sql: "ALTER TABLE tasks ADD COLUMN actuals REAL DEFAULT 0;",
+            kind: MigrationKind::Up,
+        },
     ]
 }
 

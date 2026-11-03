@@ -1,5 +1,5 @@
 import { Task } from "@/schemas/task.schema";
-import { getTaskList } from "@/usecases/tasks/getTaskList";
+import { getTaskListUseCase } from "@/usecases/tasks/getTaskList";
 import { useEffect, useState } from "react";
 
 export function useTaskList() {
@@ -11,7 +11,7 @@ export function useTaskList() {
     setIsLoading(true);
     setError(undefined);
     try {
-      setTasks(await getTaskList(false));
+      setTasks(await getTaskListUseCase(false));
     } catch (err) {
       setError(String(err));
     } finally {

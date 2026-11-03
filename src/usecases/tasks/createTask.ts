@@ -3,7 +3,7 @@ import { TaskInput, taskInputSchema } from "@/schemas/task.schema";
 import z from "zod";
 import { $ZodFlattenedError } from "zod/v4/core";
 
-export async function createTask(
+export async function createTaskUseCase(
   task: TaskInput,
 ): Promise<{ success: boolean; error: $ZodFlattenedError<TaskInput> | null }> {
   const result = taskInputSchema.safeParse(task);
