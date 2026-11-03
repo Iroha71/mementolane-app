@@ -7,6 +7,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "./components/ui/navigation-menu";
+import TaskUpdate from "./pages/tasks/TaskUpdate";
 
 function App() {
   return (

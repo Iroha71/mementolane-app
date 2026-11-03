@@ -10,7 +10,7 @@ export async function getAllTasks(isActiveOnly: boolean): Promise<Task[]> {
   return await db.select<Task[]>(sql);
 }
 
-export async function getTaskById(id: number) {
+export async function getTaskById(id: number): Promise<Task | null> {
   const db = await getDb();
   const rows = await db.select<Task[]>("SELECT * FROM tasks WHERE id = $1;", [
     id,
@@ -36,7 +36,10 @@ export async function insertTask(
   };
 }
 
-export async function updateTask(id: number, task: TaskInput) {
+export async function updateTask(
+  id: number,
+  task: TaskInput,
+): Promise<{ success: boolean }> {
   const db = await getDb();
   const result = await db.execute(
     "UPDATE tasks SET title = $1, status = $2, start_at = $3, due_at = $4, completed = $5 WHERE id = $6;",

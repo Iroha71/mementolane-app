@@ -1,9 +1,9 @@
-import { updateTask } from "@/repositories/task-repository";
+import { updateTask as updateTaskRepository } from "@/repositories/task-repository";
 import { TaskInput, taskInputSchema } from "@/schemas/task.schema";
 import z from "zod";
 import { $ZodFlattenedError } from "zod/v4/core";
 
-export async function updateTaskUseCase(
+export async function updateTask(
   id: number,
   input: TaskInput,
 ): Promise<{ success: boolean; error: $ZodFlattenedError<TaskInput> | null }> {
@@ -12,11 +12,14 @@ export async function updateTaskUseCase(
     return { success: false, error: z.flattenError(result.error) };
 
   try {
-    const { success } = await updateTask(id, input);
+    const { success } = await updateTaskRepository(id, input);
     if (!success) {
       return {
         success: false,
-        error: { formErrors: ["タスクの更新に失敗しました。"], fieldErrors: {} },
+        error: {
+          formErrors: ["タスクの更新に失敗しました。"],
+          fieldErrors: {},
+        },
       };
     }
 
