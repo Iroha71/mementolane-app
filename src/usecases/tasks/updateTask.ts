@@ -8,11 +8,14 @@ export async function updateTask(
   input: TaskInput,
 ): Promise<{ success: boolean; error: $ZodFlattenedError<TaskInput> | null }> {
   const result = taskInputSchema.safeParse(input);
-  if (result.success === false)
+  if (result.success === false) {
     return { success: false, error: z.flattenError(result.error) };
+  }
+
+  const parsedInput = result.data;
 
   try {
-    const { success } = await updateTaskRepository(id, input);
+    const { success } = await updateTaskRepository(id, parsedInput);
     if (!success) {
       return {
         success: false,
@@ -26,8 +29,6 @@ export async function updateTask(
     return { success: true, error: null };
   } catch (err) {
     console.error(err);
-    throw new Error(
-      `タスクの更新に失敗しました。再度更新してください。\n${err}`,
-    );
+    throw new Error("タスクの更新に失敗しました。再度更新してください。");
   }
 }

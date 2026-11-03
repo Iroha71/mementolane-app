@@ -7,10 +7,6 @@ export function useGetTask(id: number) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    fetchTask();
-  }, [id]);
-
   const fetchTask = async () => {
     try {
       setError("");
@@ -23,6 +19,10 @@ export function useGetTask(id: number) {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchTask();
+  }, [id]);
 
   return { task, fetchTask, isLoading, error };
 }
