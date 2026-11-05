@@ -4,5 +4,22 @@
   "prettier.requireConfig": true,
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer"
-  }
+  },
+
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/src-tauri/target/**": true,
+    "**/src-tauri/gen/**": true
+  },
+
+  "rust-analyzer.linkedProjects": ["src-tauri/Cargo.toml"],
+  "rust-analyzer.files.exclude": [
+    "node_modules",
+    "dist",
+    "src-tauri/target",
+    "src-tauri/gen"
+  ],
+  "rust-analyzer.cargo.targetDir": true,
+  "rust-analyzer.check.allTargets": false
 }
