@@ -1,4 +1,4 @@
-import { Task } from "@/schemas/task.schema";
+import { Task } from "@/models/task.model";
 import { createActualToSlot } from "@/usecases/actuals/createActualToSlot";
 import { useState } from "react";
 import { ActualInput } from "@/schemas/actual.schema";

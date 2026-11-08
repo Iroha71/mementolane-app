@@ -1,4 +1,4 @@
-import { Task } from "@/schemas/task.schema";
+import { Task } from "@/models/task.model";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Field, FieldContent, FieldLabel } from "../ui/field";
 

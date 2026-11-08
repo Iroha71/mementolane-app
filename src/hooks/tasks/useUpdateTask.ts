@@ -1,44 +1,23 @@
-import type { TaskFieldErrors } from "@/components/task/task-form";
-import { TaskInput } from "@/schemas/task.schema";
-import { updateTask } from "@/usecases/tasks/updateTask";
+import { InternalError } from "@/consts/error";
+import { Task, TaskInput } from "@/models/task.model";
+import { updateTaskUseCase } from "@/usecases/tasks/updateTaskUseCase";
 import { useState } from "react";
 
-interface UseUpdateTaskProps {
-  /** 更新に成功したときに呼ばれる */
-  onSuccess?: () => void;
-}
+export function useUpdateTask(id: number) {
+  const [updatedTask, setUpdatedTask] = useState<Task | null>(null);
+  const [error, setError] = useState<Record<string, string[]> | undefined>(
+    undefined,
+  );
 
-export function useUpdateTask(
-  id: number,
-  { onSuccess }: UseUpdateTaskProps = {},
-) {
-  const [backendError, setBackendError] = useState<string[]>([]);
-
-  const submitTask = async (
-    input: TaskInput,
-  ): Promise<TaskFieldErrors | null> => {
-    setBackendError([]);
-
+  const submitTask = async (input: TaskInput) => {
     try {
-      const result = await updateTask(id, input);
-      if (result.success) {
-        onSuccess?.();
-        return null;
-      }
-
-      if (!result.error) {
-        setBackendError(["タスクの更新に失敗しました。再度更新してください。"]);
-        return null;
-      }
-
-      // 特定の項目に紐づかないエラーは画面全体のエラーとして持つ
-      setBackendError(result.error.formErrors);
-      return result.error.fieldErrors;
+      setError(undefined);
+      const updatedTask = await updateTaskUseCase(id, input);
+      setUpdatedTask(updatedTask);
     } catch (err) {
-      setBackendError([String(err)]);
-      return null;
+      if (err instanceof InternalError) setError(err.errors);
     }
   };
 
-  return { submitTask, backendError };
+  return { submitTask, error, updatedTask };
 }

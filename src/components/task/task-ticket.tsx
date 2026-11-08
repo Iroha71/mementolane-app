@@ -1,4 +1,4 @@
-import { Task } from "@/schemas/task.schema";
+import { Task } from "@/models/task.model";
 import {
   Card,
   CardAction,

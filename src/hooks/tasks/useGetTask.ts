@@ -1,20 +1,22 @@
-import { getTaskById } from "@/repositories/task-repository";
-import { Task } from "@/schemas/task.schema";
+import { InternalError } from "@/consts/error";
+import { Task } from "@/models/task.model";
+import { getSingleTaskUseCase } from "@/usecases/tasks/getSingleTaskUseCase";
 import { useEffect, useState } from "react";
 
 export function useGetTask(id: number) {
   const [task, setTask] = useState<Task | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Record<string, string[]> | undefined>(
+    undefined,
+  );
 
   const fetchTask = async () => {
     try {
-      setError("");
+      setError(undefined);
       setIsLoading(true);
-      setTask(await getTaskById(id));
+      setTask(await getSingleTaskUseCase(id));
     } catch (err) {
-      if (err instanceof Error) setError(err.message);
-      else setError(String(err));
+      if (err instanceof InternalError) setError(err.errors);
     } finally {
       setIsLoading(false);
     }
