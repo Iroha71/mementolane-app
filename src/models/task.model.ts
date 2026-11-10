@@ -11,6 +11,10 @@ export const taskModel = z.object({
   start_at: z.iso.date({ error: "日付はISO形式で入力してください" }).nullable(),
   due_at: z.iso.date({ error: "日付はISO形式で入力してください" }).nullable(),
   completed: z.union([z.literal(0), z.literal(1)]),
+  actual_time: z
+    .number()
+    .nonnegative({ error: "実績時間は0以上で入力してください" })
+    .min(0, { error: "実績時間は0以上で入力してください" }),
   created_at: z.iso.date({ error: "日付はISO形式で入力してください" }),
 });
 

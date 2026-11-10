@@ -57,6 +57,7 @@ export default function TaskForm({
       due_at: null,
       status: "planning",
       completed: 0,
+      actual_time: 0,
       ...defaultValues,
     },
   });
