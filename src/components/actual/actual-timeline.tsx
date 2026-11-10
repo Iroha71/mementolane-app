@@ -12,7 +12,6 @@ import React from "react";
 
 interface ActualTimelineProps {
   actuals: Actual[];
-  date: string;
   onUpdateSlot: (slotNumber: number) => void;
 }
 

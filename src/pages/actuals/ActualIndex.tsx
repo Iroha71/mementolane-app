@@ -3,7 +3,7 @@ import TaskList from "@/components/task/task-list";
 import { useCreateActual } from "@/hooks/actuals/useCreateActual";
 import { useGetActuals } from "@/hooks/actuals/useGetActuals";
 import { useTaskList } from "@/hooks/tasks/useTaskList";
-import { formatDate, formatWeekDay } from "@/lib/date";
+import { formatWeekDay } from "@/lib/date";
 import { Link } from "react-router";
 import { Button, buttonVariants } from "@/components/ui/button";
 import ErrorAlert from "@/components/ErrorAlert";
@@ -73,7 +73,6 @@ export default function ActualIndex() {
             <ErrorAlert key={index} message={message} />
           ))}
           <ActualTimeline
-            date={formatDate(targetDay)}
             actuals={actuals}
             onUpdateSlot={(slot) => createActualInSlot(targetDay, slot)}
           />

@@ -19,15 +19,18 @@ export async function createTaskUseCase(
       parsedInput.data.start_at,
       parsedInput.data.due_at,
     );
-    if (createdTask === null)
-      throw new Error("タスクの作成に失敗しました。もう一度お試しください。");
+    if (createdTask === null) {
+      throw new InternalError({
+        page: ["タスクの作成に失敗しました。もう一度お試しください。"],
+      });
+    }
 
     return createdTask;
   } catch (err) {
-    if (err instanceof Error) {
-      throw err;
-    } else {
-      throw new Error("タスクの作成に失敗しました。もう一度お試しください。");
-    }
+    console.error(err);
+    if (err instanceof InternalError) throw err;
+    throw new InternalError({
+      page: ["タスクの作成に失敗しました。もう一度お試しください。"],
+    });
   }
 }

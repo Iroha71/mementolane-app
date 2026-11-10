@@ -12,21 +12,17 @@ export function useCreateTask({ onSuccess }: UseCreateTaskOptions = {}) {
   const [error, setError] = useState<Record<string, string[]> | undefined>(
     undefined,
   );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const submitTask = async (task: TaskInput): Promise<void> => {
     try {
-      setIsLoading(true);
       setError(undefined);
 
       await createTaskUseCase(task);
       onSuccess?.();
     } catch (err) {
       if (err instanceof InternalError) setError(err.errors);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  return { submitTask, error, isLoading };
+  return { submitTask, error };
 }

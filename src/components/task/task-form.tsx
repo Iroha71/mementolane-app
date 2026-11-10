@@ -14,10 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { STATUSES } from "@/consts/constValues";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { $ZodFlattenedError } from "zod/v4/core";
 import { TaskInput, taskInputModel } from "@/models/task.model";
-
-export type TaskFieldErrors = $ZodFlattenedError<TaskInput>["fieldErrors"];
 
 interface TaskFormProps {
   /** 指定しなかった項目は空欄（状態は「planning」）で始まる。最初の描画でのみ読まれる */
@@ -26,10 +23,9 @@ interface TaskFormProps {
   legend?: string;
   /** 送信ボタンの文言 */
   submitLabel?: string;
-  /** 項目ごとのエラーを返すと、該当する項目の下に表示する */
-  onSubmit: (
-    values: TaskInput,
-  ) => void | TaskFieldErrors | null | Promise<void | TaskFieldErrors | null>;
+  /** 入力チェックを通った値で送信するときに呼ばれる */
+  onSubmit: (values: TaskInput) => void | Promise<void>;
+  /** 項目ごとのエラー。該当する項目の下に表示する */
   error?: Record<string, string[]>;
   /** 送信ボタンの上に表示する内容 */
   notice?: React.ReactNode;
@@ -65,13 +61,9 @@ export default function TaskForm({
     },
   });
 
-  const submit = async (values: TaskInput) => {
-    await onSubmit(values);
-  };
-
   return (
     <div className="w-full max-w-[30rem]">
-      <form onSubmit={handleSubmit(submit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
           <FieldSet>
             <FieldLegend>{legend}</FieldLegend>

@@ -1,3 +1,4 @@
+import ErrorAlert from "@/components/ErrorAlert";
 import TaskForm from "@/components/task/task-form";
 import { useCreateTask } from "@/hooks/tasks/useCreateTask";
 import { taskModel } from "@/models/task.model";
@@ -20,6 +21,13 @@ export default function TaskCreate() {
         defaultValues={{ status: defaultStatus }}
         onSubmit={submitTask}
         error={error}
+        notice={
+          error && (
+            <ErrorAlert
+              message={error.page?.[0] ?? "入力内容を確認してください。"}
+            />
+          )
+        }
       />
     </div>
   );

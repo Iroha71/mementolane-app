@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/db";
-import { Task, TaskInput } from "@/models/task.model";
+import { Task } from "@/models/task.model";
 
 export class TaskRepository {
   async getAll(isIncludeComplete: boolean): Promise<Task[]> {
@@ -53,18 +53,3 @@ export class TaskRepository {
 }
 
 export const taskRepository = new TaskRepository();
-
-export async function updateTask(
-  id: number,
-  task: TaskInput,
-): Promise<{ success: boolean }> {
-  const db = await getDb();
-  const result = await db.execute(
-    "UPDATE tasks SET title = $1, status = $2, start_at = $3, due_at = $4, completed = $5 WHERE id = $6;",
-    [task.title, task.status, task.start_at, task.due_at, task.completed, id],
-  );
-
-  return {
-    success: result.rowsAffected > 0,
-  };
-}
