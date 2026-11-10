@@ -22,9 +22,30 @@ export function useGetActuals() {
     }
   };
 
+  // 表示する日が変わるたびに、その日の実績を取り直す
   useEffect(() => {
     fetchActuals();
-  }, []);
+  }, [targetDay]);
 
-  return { actuals, isLoading, error, fetchActuals, targetDay };
+  /** 表示する日を diff 日だけ前後に動かす */
+  const moveTargetDay = (diff: number) => {
+    setTargetDay((prev) => {
+      const next = new Date(prev);
+      next.setDate(prev.getDate() + diff);
+      return next;
+    });
+  };
+
+  const goToPrevDay = () => moveTargetDay(-1);
+  const goToNextDay = () => moveTargetDay(1);
+
+  return {
+    actuals,
+    isLoading,
+    error,
+    fetchActuals,
+    targetDay,
+    goToPrevDay,
+    goToNextDay,
+  };
 }

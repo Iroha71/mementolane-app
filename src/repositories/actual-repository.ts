@@ -16,15 +16,16 @@ export class ActualRepository {
   }
 
   /** 同じ record_at の実績があればタスクを上書きし、なければ登録する */
-  async upsert(recordAt: string, taskId: number): Promise<boolean> {
+  async upsert(recordAt: string, taskId: number): Promise<Actual | null> {
     const db = await getDb();
-    const result = await db.execute(
+    const updatedActuals = await db.select<Actual[]>(
       "INSERT INTO actuals(record_at, task_id) VALUES($1, $2) \
-        ON CONFLICT(record_at) DO UPDATE SET task_id = excluded.task_id;",
+        ON CONFLICT(record_at) DO UPDATE SET task_id = excluded.task_id \
+        RETURNING *;",
       [recordAt, taskId],
     );
 
-    return result.rowsAffected > 0;
+    return updatedActuals[0] ?? null;
   }
 }
 

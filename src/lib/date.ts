@@ -14,9 +14,9 @@ export const formatDate = (date: Date | null): string => {
   }
 };
 
-export function formatWeekDay(date: string): string {
+export function formatWeekDay(date: string | Date): string {
   const parsedDate = new Date(date);
-  if (Number.isNaN(parsedDate.getTime())) return date;
+  if (Number.isNaN(parsedDate.getTime())) return String(date);
 
   const mm = String(parsedDate.getMonth() + 1).padStart(2, "0");
   const dd = String(parsedDate.getDate()).padStart(2, "0");
