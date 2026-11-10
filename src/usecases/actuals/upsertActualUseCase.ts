@@ -2,6 +2,7 @@ import { InternalError } from "@/consts/error";
 import { Actual, ActualInput, actualInputModel } from "@/models/actual.model";
 import { actualRepository } from "@/repositories/actual-repository";
 import z from "zod";
+import { updateActualTimeUseCase } from "../tasks/updateActualTimeUseCase";
 
 /** スロットに実績を登録する。同じスロットに実績があればタスクを上書きする */
 export async function upsertActualUseCase(
@@ -13,25 +14,19 @@ export async function upsertActualUseCase(
     const errors = z.flattenError(parsedInput.error);
     throw new InternalError(errors.fieldErrors);
   }
-  try {
-    const updatedACtual = await repo.upsert(
-      parsedInput.data.record_at,
-      parsedInput.data.task_id,
-    );
+  const updatedActual = await repo.upsert(
+    parsedInput.data.record_at,
+    parsedInput.data.task_id,
+  );
 
-    if (updatedACtual === null)
-      throw new InternalError({
-        page: [
-          "登録対象のタスクがありませんでした。タスクが存在するかご確認ください。",
-        ],
-      });
-
-    return updatedACtual;
-  } catch (err) {
-    console.error(err);
-    if (err instanceof InternalError) throw err;
+  if (updatedActual === null)
     throw new InternalError({
-      page: ["実績の登録に失敗しました。もう一度お試しください。"],
+      page: [
+        "登録対象のタスクがありませんでした。タスクが存在するかご確認ください。",
+      ],
     });
-  }
+
+  await updateActualTimeUseCase(parsedInput.data.task_id, 0.5);
+
+  return updatedActual;
 }

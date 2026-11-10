@@ -50,6 +50,16 @@ export class TaskRepository {
 
     return updatedTask[0] ?? null;
   }
+
+  async updateActual(id: number, actualTime: number): Promise<Task | null> {
+    const db = await getDb();
+    const updatedTask = await db.select<Task[]>(
+      "UPDATE tasks SET actual_time = $1 WHERE id = $2 RETURNING *;",
+      [actualTime, id],
+    );
+
+    return updatedTask[0] ?? null;
+  }
 }
 
 export const taskRepository = new TaskRepository();
