@@ -1,29 +1,33 @@
+import ErrorAlert from "@/components/ErrorAlert";
 import TaskForm from "@/components/task/task-form";
 import { useCreateTask } from "@/hooks/tasks/useCreateTask";
-import { taskSchema } from "@/schemas/task.schema";
+import { taskModel } from "@/models/task.model";
 import { useNavigate, useSearchParams } from "react-router";
 
 export default function TaskCreate() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { submitTask, backendError } = useCreateTask({
+  const { submitTask, error } = useCreateTask({
     onSuccess: () => navigate("/"),
   });
-  const parsedStatus = taskSchema.shape.status.safeParse(
+  const parsedStatus = taskModel.shape.status.safeParse(
     searchParams.get("defaultStatus"),
   );
   const defaultStatus = parsedStatus.success ? parsedStatus.data : "planning";
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {backendError.length > 0 && (
-        <p className="whitespace-pre-line text-red-600">
-          {backendError.join("\n")}
-        </p>
-      )}
       <TaskForm
         defaultValues={{ status: defaultStatus }}
         onSubmit={submitTask}
+        error={error}
+        notice={
+          error && (
+            <ErrorAlert
+              message={error.page?.[0] ?? "入力内容を確認してください。"}
+            />
+          )
+        }
       />
     </div>
   );

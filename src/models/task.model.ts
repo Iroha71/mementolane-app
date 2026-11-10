@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const taskSchema = z.object({
+export const taskModel = z.object({
   id: z.number().int(),
   title: z
     .string()
@@ -14,11 +14,11 @@ export const taskSchema = z.object({
   created_at: z.iso.date({ error: "日付はISO形式で入力してください" }),
 });
 
-export type Task = z.infer<typeof taskSchema>;
+export type Task = z.infer<typeof taskModel>;
 
-export const taskInputSchema = taskSchema.omit({
+export const taskInputModel = taskModel.omit({
   id: true,
   created_at: true,
 });
 
-export type TaskInput = z.input<typeof taskInputSchema>;
+export type TaskInput = z.input<typeof taskInputModel>;

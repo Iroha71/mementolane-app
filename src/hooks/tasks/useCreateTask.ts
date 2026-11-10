@@ -1,6 +1,6 @@
-import type { TaskFieldErrors } from "@/components/task/task-form";
-import { TaskInput } from "@/schemas/task.schema";
-import { createTask } from "@/usecases/tasks/createTask";
+import { InternalError } from "@/consts/error";
+import { TaskInput } from "@/models/task.model";
+import { createTaskUseCase } from "@/usecases/tasks/createTaskUseCase";
 import { useState } from "react";
 
 interface UseCreateTaskOptions {
@@ -9,33 +9,20 @@ interface UseCreateTaskOptions {
 }
 
 export function useCreateTask({ onSuccess }: UseCreateTaskOptions = {}) {
-  const [backendError, setBackendError] = useState<string[]>([]);
+  const [error, setError] = useState<Record<string, string[]> | undefined>(
+    undefined,
+  );
 
-  const submitTask = async (
-    task: TaskInput,
-  ): Promise<TaskFieldErrors | null> => {
-    setBackendError([]);
-
+  const submitTask = async (task: TaskInput): Promise<void> => {
     try {
-      const result = await createTask(task);
-      if (result.success) {
-        onSuccess?.();
-        return null;
-      }
+      setError(undefined);
 
-      if (!result.error) {
-        setBackendError(["タスクの登録に失敗しました。再度登録してください。"]);
-        return null;
-      }
-
-      // 特定の項目に紐づかないエラーは画面全体のエラーとして持つ
-      setBackendError(result.error.formErrors);
-      return result.error.fieldErrors;
+      await createTaskUseCase(task);
+      onSuccess?.();
     } catch (err) {
-      setBackendError([String(err)]);
-      return null;
+      if (err instanceof InternalError) setError(err.errors);
     }
   };
 
-  return { submitTask, backendError };
+  return { submitTask, error };
 }

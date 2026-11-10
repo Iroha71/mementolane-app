@@ -1,7 +1,10 @@
+import ErrorAlert from "@/components/ErrorAlert";
 import TaskForm from "@/components/task/task-form";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { CircleCheckIcon } from "lucide-react";
 import { useGetTask } from "@/hooks/tasks/useGetTask";
 import { useUpdateTask } from "@/hooks/tasks/useUpdateTask";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import z from "zod";
 
 const idParamSchema = z.coerce.number().int().positive();
@@ -22,36 +25,56 @@ export default function TaskUpdate() {
 }
 
 function TaskUpdateContent({ id }: { id: number }) {
-  const navigate = useNavigate();
-  const { task, isLoading, error } = useGetTask(id);
-  const { submitTask, backendError } = useUpdateTask(id, {
-    onSuccess: () => navigate("/"),
-  });
+  const { task, isLoading, error: fetchError } = useGetTask(id);
+  const { submitTask, error: updateError, updatedTask } = useUpdateTask(id);
+  // 更新後は保存された内容をフォームに表示する
+  const currentTask = updatedTask ?? task;
 
   if (isLoading) return <p className="text-center">読み込み中...</p>;
-  if (error) return <p className="text-center text-red-600">{error}</p>;
-  if (!task) {
+  if (fetchError) {
+    return (
+      <div className="flex justify-center">
+        <ErrorAlert
+          message={fetchError.page?.[0] ?? "タスクの取得に失敗しました。"}
+        />
+      </div>
+    );
+  }
+  if (!currentTask) {
     return <p className="text-center">タスクが見つかりませんでした。</p>;
   }
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {backendError.length > 0 && (
-        <p className="whitespace-pre-line text-center text-sm text-red-600">
-          {backendError.join("\n")}
-        </p>
-      )}
       <TaskForm
+        // TaskForm は defaultValues を最初の描画でしか読まないため、内容が変わったら作り直す
+        key={JSON.stringify(currentTask)}
         legend="タスクを編集"
         submitLabel="更新する"
         defaultValues={{
-          title: task.title,
-          status: task.status,
-          start_at: task.start_at,
-          due_at: task.due_at,
-          completed: task.completed,
+          title: currentTask.title,
+          status: currentTask.status,
+          start_at: currentTask.start_at,
+          due_at: currentTask.due_at,
+          completed: currentTask.completed,
         }}
         onSubmit={submitTask}
+        error={updateError}
+        notice={
+          // 更新に成功した後でも、次の更新に失敗したらエラーを優先して表示する
+          updateError ? (
+            <ErrorAlert
+              message={updateError.page?.[0] ?? "入力内容を確認してください。"}
+            />
+          ) : (
+            updatedTask && (
+              <Alert>
+                <CircleCheckIcon />
+                <AlertTitle>更新しました</AlertTitle>
+              </Alert>
+            )
+          )
+        }
       />
     </div>
   );

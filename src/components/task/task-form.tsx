@@ -14,10 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { STATUSES } from "@/consts/constValues";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { TaskInput, taskInputSchema } from "@/schemas/task.schema";
-import { $ZodFlattenedError } from "zod/v4/core";
-
-export type TaskFieldErrors = $ZodFlattenedError<TaskInput>["fieldErrors"];
+import { TaskInput, taskInputModel } from "@/models/task.model";
 
 interface TaskFormProps {
   /** 指定しなかった項目は空欄（状態は「planning」）で始まる。最初の描画でのみ読まれる */
@@ -26,10 +23,12 @@ interface TaskFormProps {
   legend?: string;
   /** 送信ボタンの文言 */
   submitLabel?: string;
-  /** 項目ごとのエラーを返すと、該当する項目の下に表示する */
-  onSubmit: (
-    values: TaskInput,
-  ) => void | TaskFieldErrors | null | Promise<void | TaskFieldErrors | null>;
+  /** 入力チェックを通った値で送信するときに呼ばれる */
+  onSubmit: (values: TaskInput) => void | Promise<void>;
+  /** 項目ごとのエラー。該当する項目の下に表示する */
+  error?: Record<string, string[]>;
+  /** 送信ボタンの上に表示する内容 */
+  notice?: React.ReactNode;
 }
 const RequireMark = (): React.JSX.Element => {
   return <span className="text-red-600">*</span>;
@@ -39,6 +38,8 @@ export default function TaskForm({
   defaultValues,
   legend = "タスクを作成",
   submitLabel = "登録する",
+  error,
+  notice,
   onSubmit,
 }: TaskFormProps): React.JSX.Element {
   const navigate = useNavigate();
@@ -46,10 +47,9 @@ export default function TaskForm({
     register,
     control,
     handleSubmit,
-    setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm<TaskInput>({
-    resolver: zodResolver(taskInputSchema),
+    resolver: zodResolver(taskInputModel),
     mode: "onChange",
     defaultValues: {
       title: "",
@@ -61,23 +61,9 @@ export default function TaskForm({
     },
   });
 
-  const submit = async (values: TaskInput) => {
-    const fieldErrors = await onSubmit(values);
-    if (!fieldErrors) return;
-
-    for (const [name, messages] of Object.entries(fieldErrors) as [
-      keyof TaskInput,
-      string[] | undefined,
-    ][]) {
-      if (messages?.[0]) {
-        setError(name, { type: "server", message: messages[0] });
-      }
-    }
-  };
-
   return (
     <div className="w-full max-w-[30rem]">
-      <form onSubmit={handleSubmit(submit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
           <FieldSet>
             <FieldLegend>{legend}</FieldLegend>
@@ -93,6 +79,9 @@ export default function TaskForm({
                   placeholder="○○を実装する"
                 />
                 <FieldError errors={[errors.title]} />
+                {error?.title && (
+                  <FieldError errors={[{ message: error.title?.[0] }]} />
+                )}
               </Field>
               <FieldSet>
                 <FieldLegend variant="label">状態</FieldLegend>
@@ -126,6 +115,9 @@ export default function TaskForm({
                   )}
                 />
                 <FieldError errors={[errors.status]} />
+                {error?.status && (
+                  <FieldError errors={[{ message: error.status?.[0] }]} />
+                )}
               </FieldSet>
               <div className="grid grid-cols-2 gap-4">
                 <Field>
@@ -138,8 +130,16 @@ export default function TaskForm({
                 </Field>
               </div>
               <FieldError errors={[errors.start_at, errors.due_at]} />
+              {(error?.start_at || error?.due_at) && (
+                <FieldError
+                  errors={[error.start_at?.[0], error.due_at?.[0]]
+                    .filter((message) => message !== undefined)
+                    .map((message) => ({ message }))}
+                />
+              )}
             </FieldGroup>
           </FieldSet>
+          {notice}
           <Field orientation="horizontal" className="flex justify-center">
             <Button type="submit" disabled={isSubmitting || !isValid}>
               {submitLabel}
