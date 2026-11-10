@@ -1,4 +1,5 @@
-import { Actual } from "@/schemas/actual.schema";
+import { Actual } from "@/models/actual.model";
+import { recordAtToSlot } from "@/lib/date";
 import {
   Table,
   TableBody,
@@ -33,32 +34,28 @@ const getTimes = (): TimeSlot[] => {
 const TIMES = getTimes();
 
 interface TaskCellProps {
-  actuals: Actual[];
+  actual: Actual | undefined;
   slot: number;
   onSlotClick: (slot: number) => void;
 }
 
 const TaskCell = ({
-  actuals,
+  actual,
   slot,
   onSlotClick,
-}: TaskCellProps): React.JSX.Element => {
-  const result = actuals.find((actual) => actual.slot === slot);
-  if (result !== undefined) {
-    return (
-      <TableCell onClick={() => onSlotClick(slot)}>
-        {result.task_title}
-      </TableCell>
-    );
-  } else {
-    return <TableCell onClick={() => onSlotClick(slot)}></TableCell>;
-  }
-};
+}: TaskCellProps): React.JSX.Element => (
+  <TableCell onClick={() => onSlotClick(slot)}>{actual?.task_title}</TableCell>
+);
 
 export default function ActualTimeline({
   actuals,
   onUpdateSlot,
 }: ActualTimelineProps) {
+  // record_at（UTC）をローカルのスロット番号に変換して引けるようにする
+  const actualBySlot = new Map(
+    actuals.map((actual) => [recordAtToSlot(actual.record_at), actual]),
+  );
+
   return (
     <Table>
       <TableHeader>
@@ -72,7 +69,7 @@ export default function ActualTimeline({
           <TableRow key={index}>
             <TableCell>{time}</TableCell>
             <TaskCell
-              actuals={actuals}
+              actual={actualBySlot.get(index)}
               slot={index}
               onSlotClick={onUpdateSlot}
             />

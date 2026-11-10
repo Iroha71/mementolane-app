@@ -1,8 +1,8 @@
 import { Task } from "@/models/task.model";
-import { createActualToSlot } from "@/usecases/actuals/createActualToSlot";
 import { useState } from "react";
-import { ActualInput } from "@/schemas/actual.schema";
-import { formatDate } from "@/lib/date";
+import { ActualInput } from "@/models/actual.model";
+import { slotToRecordAt } from "@/lib/date";
+import { upsertActualUseCase } from "@/usecases/actuals/upsertActualUseCase";
 
 export function useCreateActual(onCreated: () => Promise<void>) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -14,12 +14,11 @@ export function useCreateActual(onCreated: () => Promise<void>) {
 
     const input: ActualInput = {
       task_id: selectedTask.id,
-      record_at: formatDate(date),
-      slot: slot,
+      record_at: slotToRecordAt(date, slot),
     };
 
     try {
-      await createActualToSlot(input);
+      await upsertActualUseCase(input);
       await onCreated();
     } catch (err) {
       console.error(err);
