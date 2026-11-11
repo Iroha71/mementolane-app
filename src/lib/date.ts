@@ -12,6 +12,14 @@ export function formatWeekDay(date: string | Date): string {
 /** 実績スロット1つあたりの分数 */
 const SLOT_MINUTES = 30;
 
+/** 1人日あたりの時間 */
+const HOURS_PER_PERSON_DAY = 8;
+
+/** 実績スロットの件数を人日に変換する */
+export function slotCountToPersonDays(slotCount: number): number {
+  return (slotCount * SLOT_MINUTES) / 60 / HOURS_PER_PERSON_DAY;
+}
+
 /** ローカル時刻でその日の 0:00 を返す */
 export function startOfLocalDay(date: Date): Date {
   const d = new Date(date);

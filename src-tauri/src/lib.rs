@@ -40,12 +40,6 @@ fn migrations() -> Vec<Migration> {
             );",
             kind: MigrationKind::Up,
         },
-        Migration {
-            version: 3,
-            description: "tasksテーブルに実績時間を追加する",
-            sql: "ALTER TABLE tasks ADD actual_time REAL NOT NULL DEFAULT 0;",
-            kind: MigrationKind::Up,
-        },
     ]
 }
 

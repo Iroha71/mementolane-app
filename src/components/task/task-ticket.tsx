@@ -53,10 +53,6 @@ export default function TaskTicket({ task }: TaskTicketProps) {
             {task.due_at ? formatWeekDay(task.due_at) : "---"}
           </span>
         </p>
-        <p>
-          <label htmlFor="">実績: </label>
-          <span className="font-bold">{task.actual_time} 人日</span>
-        </p>
       </CardContent>
     </Card>
   );

@@ -6,6 +6,7 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
+  FieldTitle,
 } from "../ui/field";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -29,6 +30,8 @@ interface TaskFormProps {
   error?: Record<string, string[]>;
   /** 送信ボタンの上に表示する内容 */
   notice?: React.ReactNode;
+  /** 実績（人日）。指定したときだけ表示する。編集はできない */
+  actualTime?: number;
 }
 const RequireMark = (): React.JSX.Element => {
   return <span className="text-red-600">*</span>;
@@ -40,6 +43,7 @@ export default function TaskForm({
   submitLabel = "登録する",
   error,
   notice,
+  actualTime,
   onSubmit,
 }: TaskFormProps): React.JSX.Element {
   const navigate = useNavigate();
@@ -57,7 +61,6 @@ export default function TaskForm({
       due_at: null,
       status: "planning",
       completed: 0,
-      actual_time: 0,
       ...defaultValues,
     },
   });
@@ -137,6 +140,12 @@ export default function TaskForm({
                     .filter((message) => message !== undefined)
                     .map((message) => ({ message }))}
                 />
+              )}
+              {actualTime !== undefined && (
+                <Field>
+                  <FieldTitle>実績</FieldTitle>
+                  <p className="font-bold">{actualTime} 人日</p>
+                </Field>
               )}
             </FieldGroup>
           </FieldSet>
