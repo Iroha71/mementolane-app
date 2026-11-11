@@ -40,6 +40,12 @@ fn migrations() -> Vec<Migration> {
             );",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "タスクごとの実績集計でactualsを全件走査しないよう、actuals.task_idにインデックスを追加する",
+            sql: "CREATE INDEX idx_actuals_task_id ON actuals(task_id);",
+            kind: MigrationKind::Up,
+        },
     ]
 }
 
