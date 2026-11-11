@@ -27,8 +27,6 @@ export default function TaskUpdate() {
 function TaskUpdateContent({ id }: { id: number }) {
   const { task, isLoading, error: fetchError } = useGetTask(id);
   const { submitTask, error: updateError, updatedTask } = useUpdateTask(id);
-  // 更新後は保存された内容をフォームに表示する
-  const currentTask = updatedTask ?? task;
 
   if (isLoading) return <p className="text-center">読み込み中...</p>;
   if (fetchError) {
@@ -40,9 +38,10 @@ function TaskUpdateContent({ id }: { id: number }) {
       </div>
     );
   }
-  if (!currentTask) {
+  if (!task) {
     return <p className="text-center">タスクが見つかりませんでした。</p>;
   }
+  const currentTask = updatedTask ?? task;
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -58,10 +57,10 @@ function TaskUpdateContent({ id }: { id: number }) {
           due_at: currentTask.due_at,
           completed: currentTask.completed,
         }}
+        actualTime={task.actual_time}
         onSubmit={submitTask}
         error={updateError}
         notice={
-          // 更新に成功した後でも、次の更新に失敗したらエラーを優先して表示する
           updateError ? (
             <ErrorAlert
               message={updateError.page?.[0] ?? "入力内容を確認してください。"}

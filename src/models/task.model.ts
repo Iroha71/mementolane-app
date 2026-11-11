@@ -16,6 +16,9 @@ export const taskModel = z.object({
 
 export type Task = z.infer<typeof taskModel>;
 
+/** 詳細画面用のタスク。actual_time は actuals の件数から集計した実績（人日） */
+export type TaskDetail = Task & { actual_time: number };
+
 export const taskInputModel = taskModel.omit({
   id: true,
   created_at: true,
