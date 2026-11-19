@@ -24,6 +24,7 @@ export async function deleteActualUseCase(
     await repo.delete(parsed.data);
   } catch (err) {
     console.error(err);
+    if (err instanceof InternalError) throw err;
     throw new InternalError({
       page: ["実績の削除に失敗しました。再度お試しください。"],
     });
