@@ -2,13 +2,11 @@ import { getDb } from "@/lib/db";
 import { Actual } from "@/models/actual.model";
 
 export class ActualRepository {
-  async find(record_at: string): Promise<Actual | null> {
+  async find(record_at: string): Promise<Omit<Actual, "task_title"> | null> {
     const db = await getDb();
 
-    const actuals = await db.select<Actual[]>(
-      "SELECT actuals.id, actuals.record_at, actuals.task_id, tasks.title AS task_title \
-        FROM actuals INNER JOIN tasks ON actuals.task_id = tasks.id \
-        WHERE actuals.record_at = $1",
+    const actuals = await db.select<Omit<Actual, "task_title">[]>(
+      "SELECT id, record_at, task_id FROM actuals WHERE record_at = $1",
       [record_at],
     );
 
