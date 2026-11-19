@@ -26,7 +26,8 @@ export default function ActualIndex() {
     error: createError,
     assignTaskToSlot,
     upsertActuals,
-  } = useCreateActual(fetchActuals);
+    deleteActual,
+  } = useCreateActual(fetchActuals, fetchActuals);
   const createErrorMessages = createError
     ? Object.values(createError).flat()
     : [];
@@ -82,6 +83,7 @@ export default function ActualIndex() {
             drafts={drafts}
             actuals={actuals}
             onAssignTask={assignTaskToSlot}
+            onDeleteActual={deleteActual}
           />
         </div>
       </div>
