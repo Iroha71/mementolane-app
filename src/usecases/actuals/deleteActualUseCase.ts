@@ -14,7 +14,7 @@ export async function deleteActualUseCase(
   }
 
   try {
-    const targetActual = repo.find(parsed.data);
+    const targetActual = await repo.find(parsed.data);
     if (targetActual === null)
       throw new InternalError({
         page: [

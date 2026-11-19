@@ -8,7 +8,7 @@ export class ActualRepository {
     const actuals = await db.select<Actual[]>(
       "SELECT actuals.id, actuals.record_at, actuals.task_id, tasks.title AS task_title \
         FROM actuals INNER JOIN tasks ON actuals.task_id = tasks.id \
-        WHERE record_at = $1",
+        WHERE actuals.record_at = $1",
       [record_at],
     );
 
