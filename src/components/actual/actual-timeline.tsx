@@ -44,6 +44,8 @@ const TaskCell = ({
         {title}
         {title && (
           <Button
+            size="icon"
+            aria-label="実績を削除"
             variant="ghost"
             onClick={(e) => {
               e.stopPropagation();
