@@ -7,18 +7,14 @@ export function useGetActuals() {
   const [targetDay, setTargetDay] = useState<Date>(new Date());
   const [actuals, setActuals] = useState<Actual[]>([]);
   const [error, setError] = useState<Record<string, string[]> | undefined>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const fetchActuals = async () => {
     try {
-      setIsLoading(true);
       setError(undefined);
       setActuals(await getActualInDayUseCase(targetDay));
     } catch (err) {
       if (err instanceof InternalError) {
         setError(err.errors);
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -41,7 +37,6 @@ export function useGetActuals() {
 
   return {
     actuals,
-    isLoading,
     error,
     fetchActuals,
     targetDay,

@@ -15,29 +15,21 @@ export class ActualRepository {
     );
   }
 
+  /** 同じ record_at の実績があればタスクを上書きし、なければ登録する */
   async upsertMultiple(
     inputs: { record_at: string; task_id: number }[],
   ): Promise<void> {
     if (inputs.length <= 0) return;
     const db = await getDb();
+    // 1件につき2つ使うので、2件なら "($1, $2), ($3, $4)" になる
+    const placeholders = inputs
+      .map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`)
+      .join(", ");
     await db.execute(
-      "INSERT INTO actuals(record_at, task_id) VALUES ($1, $2) \
-        ON CONFLICT(record_at) DO UPDATE SET task_id = excluded.task_id;",
+      `INSERT INTO actuals(record_at, task_id) VALUES ${placeholders} \
+        ON CONFLICT(record_at) DO UPDATE SET task_id = excluded.task_id;`,
       inputs.flatMap((input) => [input.record_at, input.task_id]),
     );
-  }
-
-  /** 同じ record_at の実績があればタスクを上書きし、なければ登録する */
-  async upsert(recordAt: string, taskId: number): Promise<Actual | null> {
-    const db = await getDb();
-    const updatedActuals = await db.select<Actual[]>(
-      "INSERT INTO actuals(record_at, task_id) VALUES($1, $2) \
-        ON CONFLICT(record_at) DO UPDATE SET task_id = excluded.task_id \
-        RETURNING *;",
-      [recordAt, taskId],
-    );
-
-    return updatedActuals[0] ?? null;
   }
 }
 

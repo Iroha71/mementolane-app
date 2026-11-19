@@ -25,6 +25,7 @@ export default function ActualIndex() {
     drafts,
     error: createError,
     assignTaskToSlot,
+    upsertActuals,
   } = useCreateActual(fetchActuals);
   const createErrorMessages = createError
     ? Object.values(createError).flat()
@@ -59,6 +60,9 @@ export default function ActualIndex() {
             onSelectTask={setSelectedTask}
           />
           <div className="mt-4 text-center">
+            <Button onClick={upsertActuals}>更新する</Button>
+          </div>
+          <div className="mt-4 text-center">
             <Link to="/" className={buttonVariants({ variant: "link" })}>
               ホームへ戻る
             </Link>
@@ -79,7 +83,6 @@ export default function ActualIndex() {
             actuals={actuals}
             onAssignTask={assignTaskToSlot}
           />
-          <Button>更新する</Button>
         </div>
       </div>
     </div>
