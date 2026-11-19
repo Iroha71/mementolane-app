@@ -20,15 +20,24 @@ interface ActualTimelineProps {
 interface TaskCellProps {
   title: string | undefined;
   recordAt: string;
+  isDraft: boolean;
   onClick: (recordAt: string) => void;
 }
 
 const TaskCell = ({
   title,
   recordAt,
+  isDraft,
   onClick,
 }: TaskCellProps): React.JSX.Element => {
-  return <TableCell onClick={() => onClick(recordAt)}>{title}</TableCell>;
+  return (
+    <TableCell
+      onClick={() => onClick(recordAt)}
+      className={isDraft ? "bg-lime-100" : ""}
+    >
+      {title}
+    </TableCell>
+  );
 };
 
 export default function ActualTimeline({
@@ -60,6 +69,7 @@ export default function ActualTimeline({
               <TaskCell
                 title={draft?.title ?? actual?.task_title}
                 recordAt={recordAt}
+                isDraft={draft !== undefined}
                 onClick={onAssignTask}
               />
             </TableRow>

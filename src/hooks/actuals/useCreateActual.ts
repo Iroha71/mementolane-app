@@ -31,7 +31,7 @@ export function useCreateActual(onCreated: () => Promise<void>) {
       await showError("タスクが選択されていません。");
       return;
     }
-    setDrafts(drafts.set(recordAt, selectedTask));
+    setDrafts((prev) => new Map(prev).set(recordAt, selectedTask));
   };
 
   const upsertActuals = async () => {
