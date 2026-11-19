@@ -8,7 +8,27 @@ const MISSING_TASK_MESSAGE =
 const DEFAULT_ERROR_MESSAGE =
   "実績の登録に失敗しました。もう一度お試しください。";
 
-/** スロットに実績を登録する。同じスロットに実績があればタスクを上書きする */
+export async function upsertActualMultipleUseCase(
+  input: ActualInput[],
+  repo = actualRepository,
+): Promise<void> {
+  const parsedInput = z.array(actualInputModel).safeParse(input);
+  if (!parsedInput.success) {
+    throw new InternalError({ page: ["不明なエラーが発生しました"] });
+  }
+
+  try {
+    await repo.upsertMultiple(parsedInput.data);
+  } catch (err) {
+    console.error(err);
+    const isMissingTask = String(err).includes("FOREIGN KEY constraint failed");
+    throw new InternalError({
+      page: [isMissingTask ? MISSING_TASK_MESSAGE : DEFAULT_ERROR_MESSAGE],
+    });
+  }
+}
+
+/** record_at に実績を登録する。同じ record_at に実績があればタスクを上書きする */
 export async function upsertActualUseCase(
   input: ActualInput,
   repo = actualRepository,
