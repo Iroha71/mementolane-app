@@ -22,8 +22,9 @@ export default function ActualIndex() {
   const {
     selectedTask,
     setSelectedTask,
-    createActual,
+    drafts,
     error: createError,
+    assignTaskToSlot,
   } = useCreateActual(fetchActuals);
   const createErrorMessages = createError
     ? Object.values(createError).flat()
@@ -74,8 +75,9 @@ export default function ActualIndex() {
           ))}
           <ActualTimeline
             day={targetDay}
+            drafts={drafts}
             actuals={actuals}
-            onUpdate={createActual}
+            onAssignTask={assignTaskToSlot}
           />
           <Button>更新する</Button>
         </div>

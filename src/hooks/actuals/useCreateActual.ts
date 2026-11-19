@@ -22,9 +22,21 @@ const getErrorMessage = (err: unknown): string => {
 
 export function useCreateActual(onCreated: () => Promise<void>) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [drafts, setDrafts] = useState<Map<string, number>>(new Map());
+  const [drafts, setDrafts] = useState<Map<string, Task>>(new Map());
   const [error, setError] = useState<Record<string, string[]> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const assignTaskToSlot = async (recordAt: string) => {
+    if (selectedTask === null) {
+      await showError("タスクが選択されていません。");
+      return;
+    }
+    setDrafts(drafts.set(recordAt, selectedTask));
+  };
+
+  const upsertActuals = async () => {
+    setError(null);
+  };
 
   const createActual = async (recordAt: string) => {
     // 前回のエラー表示を消してから登録する
@@ -54,5 +66,12 @@ export function useCreateActual(onCreated: () => Promise<void>) {
     }
   };
 
-  return { selectedTask, setSelectedTask, createActual, error };
+  return {
+    selectedTask,
+    setSelectedTask,
+    createActual,
+    error,
+    assignTaskToSlot,
+    drafts,
+  };
 }

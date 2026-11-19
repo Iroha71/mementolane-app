@@ -8,32 +8,34 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import React from "react";
+import { Task } from "@/models/task.model";
 
 interface ActualTimelineProps {
   day: Date;
   actuals: Actual[];
-  onUpdate: (recordAt: string) => void;
+  drafts: Map<string, Task>;
+  onAssignTask: (recordAt: string) => void;
 }
 
 interface TaskCellProps {
-  actual: Actual | undefined;
+  title: string | undefined;
   recordAt: string;
   onClick: (recordAt: string) => void;
 }
 
 const TaskCell = ({
-  actual,
+  title,
   recordAt,
   onClick,
-}: TaskCellProps): React.JSX.Element => (
-  <TableCell onClick={() => onClick(recordAt)}>{actual?.task_title}</TableCell>
-);
+}: TaskCellProps): React.JSX.Element => {
+  return <TableCell onClick={() => onClick(recordAt)}>{title}</TableCell>;
+};
 
 export default function ActualTimeline({
   day,
   actuals,
-  onUpdate,
+  drafts,
+  onAssignTask,
 }: ActualTimelineProps) {
   const recordAts = getRecordAtsInDay(day);
   const actualByRecordAt = new Map(
@@ -49,16 +51,20 @@ export default function ActualTimeline({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {recordAts.map((recordAt) => (
-          <TableRow key={recordAt}>
-            <TableCell>{formatRecordAtLocal(recordAt)}</TableCell>
-            <TaskCell
-              actual={actualByRecordAt.get(recordAt)}
-              recordAt={recordAt}
-              onClick={onUpdate}
-            />
-          </TableRow>
-        ))}
+        {recordAts.map((recordAt) => {
+          const actual = actualByRecordAt.get(recordAt);
+          const draft = drafts.get(recordAt);
+          return (
+            <TableRow key={recordAt}>
+              <TableCell>{formatRecordAtLocal(recordAt)}</TableCell>
+              <TaskCell
+                title={draft?.title ?? actual?.task_title}
+                recordAt={recordAt}
+                onClick={onAssignTask}
+              />
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
