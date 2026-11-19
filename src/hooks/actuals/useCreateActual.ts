@@ -45,6 +45,7 @@ export function useCreateActual(
   };
 
   const deleteActual = async (recordAt: string, isDraft: boolean) => {
+    setError(null);
     if (isDraft) {
       setDrafts((prev) => {
         const next = new Map(prev);
