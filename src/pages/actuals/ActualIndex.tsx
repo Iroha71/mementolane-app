@@ -22,7 +22,7 @@ export default function ActualIndex() {
   const {
     selectedTask,
     setSelectedTask,
-    createActualInSlot,
+    createActual,
     error: createError,
   } = useCreateActual(fetchActuals);
   const createErrorMessages = createError
@@ -73,9 +73,11 @@ export default function ActualIndex() {
             <ErrorAlert key={index} message={message} />
           ))}
           <ActualTimeline
+            day={targetDay}
             actuals={actuals}
-            onUpdateSlot={(slot) => createActualInSlot(targetDay, slot)}
+            onUpdate={createActual}
           />
+          <Button>更新する</Button>
         </div>
       </div>
     </div>

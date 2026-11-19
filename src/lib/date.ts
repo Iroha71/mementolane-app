@@ -27,15 +27,27 @@ export function startOfLocalDay(date: Date): Date {
   return d;
 }
 
-/** ローカル日付とスロット番号から、保存用の record_at（UTCのISO文字列）を作る */
-export function slotToRecordAt(day: Date, slot: number): string {
+/** 1日あたりの実績スロット数 */
+const SLOTS_PER_DAY = (24 * 60) / SLOT_MINUTES;
+
+/** ローカル日付の 0:00 から minutes 分後の record_at（UTCのISO文字列）を作る */
+function toRecordAt(day: Date, minutes: number): string {
   const d = startOfLocalDay(day);
-  d.setMinutes(slot * SLOT_MINUTES);
+  d.setMinutes(minutes);
   return d.toISOString();
 }
 
-/** 保存されている record_at（UTCのISO文字列）を、表示用のローカルスロット番号に変換する */
-export function recordAtToSlot(recordAt: string): number {
+/** ローカル日付の 0:00 から 30 分刻みで、その日の record_at（UTCのISO文字列）を並べる */
+export function getRecordAtsInDay(day: Date): string[] {
+  const recordAts: string[] = [];
+  for (let i = 0; i < SLOTS_PER_DAY; i++) {
+    recordAts.push(toRecordAt(day, i * SLOT_MINUTES));
+  }
+  return recordAts;
+}
+
+/** record_at（UTCのISO文字列）を、ローカル時刻の H:mm 形式で表示する */
+export function formatRecordAtLocal(recordAt: string): string {
   const d = new Date(recordAt);
-  return d.getHours() * 2 + Math.floor(d.getMinutes() / SLOT_MINUTES);
+  return `${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}`;
 }

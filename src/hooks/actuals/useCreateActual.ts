@@ -1,7 +1,6 @@
-import { Task } from "@/models/task.model";
+import { Task, taskInputModel } from "@/models/task.model";
 import { useState } from "react";
-import { ActualInput } from "@/models/actual.model";
-import { slotToRecordAt } from "@/lib/date";
+import { ActualInput, actualInputModel } from "@/models/actual.model";
 import { upsertActualUseCase } from "@/usecases/actuals/upsertActualUseCase";
 import { InternalError } from "@/consts/error";
 import { message } from "@tauri-apps/plugin-dialog";
@@ -23,9 +22,11 @@ const getErrorMessage = (err: unknown): string => {
 
 export function useCreateActual(onCreated: () => Promise<void>) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [drafts, setDrafts] = useState<Map<string, number>>(new Map());
   const [error, setError] = useState<Record<string, string[]> | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const createActualInSlot = async (date: Date, slot: number) => {
+  const createActual = async (recordAt: string) => {
     // 前回のエラー表示を消してから登録する
     setError(null);
 
@@ -36,7 +37,7 @@ export function useCreateActual(onCreated: () => Promise<void>) {
 
     const input: ActualInput = {
       task_id: selectedTask.id,
-      record_at: slotToRecordAt(date, slot),
+      record_at: recordAt,
     };
 
     try {
@@ -53,5 +54,5 @@ export function useCreateActual(onCreated: () => Promise<void>) {
     }
   };
 
-  return { selectedTask, setSelectedTask, createActualInSlot, error };
+  return { selectedTask, setSelectedTask, createActual, error };
 }

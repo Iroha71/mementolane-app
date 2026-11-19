@@ -1,5 +1,5 @@
 import { Actual } from "@/models/actual.model";
-import { recordAtToSlot } from "@/lib/date";
+import { formatRecordAtLocal, getRecordAtsInDay } from "@/lib/date";
 import {
   Table,
   TableBody,
@@ -11,48 +11,33 @@ import {
 import React from "react";
 
 interface ActualTimelineProps {
+  day: Date;
   actuals: Actual[];
-  onUpdateSlot: (slotNumber: number) => void;
+  onUpdate: (recordAt: string) => void;
 }
-
-interface TimeSlot {
-  index: number;
-  time: string;
-}
-
-const getTimes = (): TimeSlot[] => {
-  const times: TimeSlot[] = [];
-  for (let i = 0; i < 24; i++) {
-    times.push({ index: i * 2, time: `${i}:00` });
-    times.push({ index: i * 2 + 1, time: `${i}:30` });
-  }
-
-  return times;
-};
-
-const TIMES = getTimes();
 
 interface TaskCellProps {
   actual: Actual | undefined;
-  slot: number;
-  onSlotClick: (slot: number) => void;
+  recordAt: string;
+  onClick: (recordAt: string) => void;
 }
 
 const TaskCell = ({
   actual,
-  slot,
-  onSlotClick,
+  recordAt,
+  onClick,
 }: TaskCellProps): React.JSX.Element => (
-  <TableCell onClick={() => onSlotClick(slot)}>{actual?.task_title}</TableCell>
+  <TableCell onClick={() => onClick(recordAt)}>{actual?.task_title}</TableCell>
 );
 
 export default function ActualTimeline({
+  day,
   actuals,
-  onUpdateSlot,
+  onUpdate,
 }: ActualTimelineProps) {
-  // record_at（UTC）をローカルのスロット番号に変換して引けるようにする
-  const actualBySlot = new Map(
-    actuals.map((actual) => [recordAtToSlot(actual.record_at), actual]),
+  const recordAts = getRecordAtsInDay(day);
+  const actualByRecordAt = new Map(
+    actuals.map((actual) => [actual.record_at, actual]),
   );
 
   return (
@@ -64,13 +49,13 @@ export default function ActualTimeline({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {TIMES.map(({ index, time }) => (
-          <TableRow key={index}>
-            <TableCell>{time}</TableCell>
+        {recordAts.map((recordAt) => (
+          <TableRow key={recordAt}>
+            <TableCell>{formatRecordAtLocal(recordAt)}</TableCell>
             <TaskCell
-              actual={actualBySlot.get(index)}
-              slot={index}
-              onSlotClick={onUpdateSlot}
+              actual={actualByRecordAt.get(recordAt)}
+              recordAt={recordAt}
+              onClick={onUpdate}
             />
           </TableRow>
         ))}
