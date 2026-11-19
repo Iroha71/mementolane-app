@@ -30,12 +30,14 @@ export function useCreateActual(onCreated: () => Promise<void>) {
 
     try {
       await upsertActualMultipleUseCase(inputs);
-      await onCreated?.();
+      await onCreated();
       setDrafts(new Map());
     } catch (err) {
       console.error(err);
       if (err instanceof InternalError) {
         setError(err.errors);
+      } else {
+        setError({ page: ["不明なエラーが発生しました"] });
       }
     }
   };

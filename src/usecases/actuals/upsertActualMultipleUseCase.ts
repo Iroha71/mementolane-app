@@ -14,7 +14,7 @@ export async function upsertActualMultipleUseCase(
 ): Promise<void> {
   const parsedInput = z.array(actualInputModel).safeParse(input);
   if (!parsedInput.success) {
-    throw new InternalError({ page: ["不明なエラーが発生しました"] });
+    throw new InternalError({ page: ["不正な入力値が含まれています"] });
   }
 
   try {
