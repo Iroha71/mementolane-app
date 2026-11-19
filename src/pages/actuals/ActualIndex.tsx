@@ -23,6 +23,7 @@ export default function ActualIndex() {
     selectedTask,
     setSelectedTask,
     drafts,
+    resetDrafts,
     error: createError,
     assignTaskToSlot,
     upsertActuals,
@@ -38,7 +39,10 @@ export default function ActualIndex() {
           variant="ghost"
           size="icon"
           aria-label="前日へ"
-          onClick={goToPrevDay}
+          onClick={() => {
+            resetDrafts();
+            goToPrevDay();
+          }}
         >
           <ChevronLeftIcon />
         </Button>
@@ -47,7 +51,10 @@ export default function ActualIndex() {
           variant="ghost"
           size="icon"
           aria-label="翌日へ"
-          onClick={goToNextDay}
+          onClick={() => {
+            resetDrafts();
+            goToNextDay();
+          }}
         >
           <ChevronRightIcon />
         </Button>

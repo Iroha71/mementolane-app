@@ -42,6 +42,10 @@ export function useCreateActual(onCreated: () => Promise<void>) {
     }
   };
 
+  const resetDrafts = () => {
+    setDrafts(new Map());
+  };
+
   return {
     selectedTask,
     setSelectedTask,
@@ -49,5 +53,6 @@ export function useCreateActual(onCreated: () => Promise<void>) {
     error,
     assignTaskToSlot,
     drafts,
+    resetDrafts,
   };
 }
