@@ -34,12 +34,14 @@ export function useCreateActual(
 
     try {
       await upsertActualMultipleUseCase(inputs);
-      await onCreated?.();
+      await onCreated();
       setDrafts(new Map());
     } catch (err) {
       console.error(err);
       if (err instanceof InternalError) {
         setError(err.errors);
+      } else {
+        setError({ page: ["不明なエラーが発生しました"] });
       }
     }
   };
@@ -64,6 +66,10 @@ export function useCreateActual(
     }
   };
 
+  const resetDrafts = () => {
+    setDrafts(new Map());
+  };
+
   return {
     selectedTask,
     setSelectedTask,
@@ -72,5 +78,6 @@ export function useCreateActual(
     assignTaskToSlot,
     drafts,
     deleteActual,
+    resetDrafts,
   };
 }

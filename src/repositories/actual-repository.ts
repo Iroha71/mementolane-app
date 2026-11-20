@@ -26,7 +26,7 @@ export class ActualRepository {
     );
   }
 
-  /** 同じ record_at の実績があればタスクを上書きし、なければ登録する */
+  /** 同じ record_at の実績があればタスクを上書きし、なければ登録する（複数件をまとめて処理） */
   async upsertMultiple(
     inputs: { record_at: string; task_id: number }[],
   ): Promise<void> {
