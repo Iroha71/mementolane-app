@@ -11,6 +11,15 @@ export class TaskRepository {
     return await db.select<Task[]>(sql);
   }
 
+  async find(id: number): Promise<Task | null> {
+    const db = await getDb();
+    const tasks = await db.select<Task[]>("SELECT * FROM tasks WHERE id = $1", [
+      id,
+    ]);
+
+    return tasks[0] ?? null;
+  }
+
   /** 実績の登録件数（スロット数）を付けてタスクを取得する */
   async findWithActualCount(
     id: number,
