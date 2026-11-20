@@ -8,7 +8,6 @@ export function useTaskList() {
   const [error, setError] = useState<string | undefined>(undefined);
 
   const fetchTasks = async () => {
-    setIsLoading(true);
     setError(undefined);
     try {
       setTasks(await getTasksUseCase(false));
