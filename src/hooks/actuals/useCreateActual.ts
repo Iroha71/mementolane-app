@@ -4,11 +4,15 @@ import { ActualInput } from "@/models/actual.model";
 import { upsertActualMultipleUseCase } from "@/usecases/actuals/upsertActualMultipleUseCase";
 import { InternalError } from "@/consts/error";
 import { message } from "@tauri-apps/plugin-dialog";
+import { deleteActualUseCase } from "@/usecases/actuals/deleteActualUseCase";
 
 const showError = (text: string) =>
   message(text, { title: "実績を登録できませんでした", kind: "error" });
 
-export function useCreateActual(onCreated: () => Promise<void>) {
+export function useCreateActual(
+  onCreated: () => Promise<void>,
+  onDeleted: () => Promise<void>,
+) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [drafts, setDrafts] = useState<Map<string, Task>>(new Map());
   const [error, setError] = useState<Record<string, string[]> | null>(null);
@@ -42,6 +46,26 @@ export function useCreateActual(onCreated: () => Promise<void>) {
     }
   };
 
+  const deleteActual = async (recordAt: string, isDraft: boolean) => {
+    setError(null);
+    if (isDraft) {
+      setDrafts((prev) => {
+        const next = new Map(prev);
+        next.delete(recordAt);
+        return next;
+      });
+      return;
+    }
+
+    try {
+      await deleteActualUseCase(recordAt);
+      await onDeleted();
+    } catch (err) {
+      console.error(err);
+      if (err instanceof InternalError) setError(err.errors);
+    }
+  };
+
   const resetDrafts = () => {
     setDrafts(new Map());
   };
@@ -53,6 +77,7 @@ export function useCreateActual(onCreated: () => Promise<void>) {
     error,
     assignTaskToSlot,
     drafts,
+    deleteActual,
     resetDrafts,
   };
 }

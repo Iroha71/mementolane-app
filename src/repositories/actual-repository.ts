@@ -2,6 +2,17 @@ import { getDb } from "@/lib/db";
 import { Actual } from "@/models/actual.model";
 
 export class ActualRepository {
+  async find(record_at: string): Promise<Omit<Actual, "task_title"> | null> {
+    const db = await getDb();
+
+    const actuals = await db.select<Omit<Actual, "task_title">[]>(
+      "SELECT id, record_at, task_id FROM actuals WHERE record_at = $1",
+      [record_at],
+    );
+
+    return actuals[0] ?? null;
+  }
+
   /** record_at（UTCのISO文字列）が [startAt, endAt) に含まれる実績を取得する */
   async getInDate(startAt: string, endAt: string): Promise<Actual[]> {
     const db = await getDb();
@@ -30,6 +41,11 @@ export class ActualRepository {
         ON CONFLICT(record_at) DO UPDATE SET task_id = excluded.task_id;`,
       inputs.flatMap((input) => [input.record_at, input.task_id]),
     );
+  }
+
+  async delete(record_at: string): Promise<void> {
+    const db = await getDb();
+    await db.execute("DELETE FROM actuals WHERE record_at = $1", [record_at]);
   }
 }
 
