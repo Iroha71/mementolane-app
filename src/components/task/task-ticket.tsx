@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { CircleCheck, Clock, Hourglass, Ticket } from "lucide-react";
+import { CircleCheck, Hourglass } from "lucide-react";
 import { formatWeekDay } from "@/lib/date";
 import { Link } from "react-router";
 
