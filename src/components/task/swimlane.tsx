@@ -16,15 +16,17 @@ interface SwimlaneProps {
   status: StatusGroup;
   tasks: Task[];
   onToggleCompleted: (completed: boolean) => void;
+  onChangedTaskStatus: (taskId: number, status: string) => void;
 }
 
 export default function Swimlane({
   status,
   tasks,
   onToggleCompleted,
+  onChangedTaskStatus,
 }: SwimlaneProps) {
   return (
-    <Card className="w-[20rem] shrink-0">
+    <Card className="w-[20rem] shrink-0 bg-slate-100">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <StatusIcon status={status.name} />
@@ -36,7 +38,9 @@ export default function Swimlane({
           <TaskTicket
             key={task.id}
             task={task}
+            className="mb-2 shadow-md"
             onToggleCompleted={onToggleCompleted}
+            onChangedStatus={onChangedTaskStatus}
           />
         ))}
         <CardAction>

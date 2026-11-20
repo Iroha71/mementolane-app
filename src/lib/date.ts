@@ -6,7 +6,7 @@ export function formatWeekDay(date: string | Date): string {
 
   const mm = String(parsedDate.getMonth() + 1).padStart(2, "0");
   const dd = String(parsedDate.getDate()).padStart(2, "0");
-  return `${mm}/${dd}（${WEEKDAYS[parsedDate.getDay()]}）`;
+  return `${mm}/${dd} (${WEEKDAYS[parsedDate.getDay()]})`;
 }
 
 /** 実績スロット1つあたりの分数 */

@@ -4,10 +4,19 @@ import { useTaskList } from "@/hooks/tasks/useTaskList";
 import { Link } from "react-router";
 import { buttonVariants } from "@/components/ui/button";
 import ErrorAlert from "@/components/ErrorAlert";
+import { updateTaskStatusUseCase } from "@/usecases/tasks/updateTaskStatusUseCase";
 
 export default function Index() {
-  const { tasks, isLoading, error } = useTaskList();
+  const { tasks, isLoading, error, fetchTasks } = useTaskList();
   const groupedTasks = Map.groupBy(tasks, (task) => task.status);
+  const changeTaskStatus = async (taskId: number, status: string) => {
+    try {
+      await updateTaskStatusUseCase(taskId, status);
+      await fetchTasks();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div>
@@ -28,6 +37,7 @@ export default function Index() {
                 status={status}
                 tasks={groupedTasks.get(status.name) ?? []}
                 onToggleCompleted={(completed) => console.log(completed)}
+                onChangedTaskStatus={changeTaskStatus}
               />
             ))}
           </div>
