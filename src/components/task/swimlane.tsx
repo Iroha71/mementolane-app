@@ -24,7 +24,7 @@ export default function Swimlane({
   onToggleCompleted,
 }: SwimlaneProps) {
   return (
-    <Card className="w-[20rem] shrink-0">
+    <Card className="w-[20rem] shrink-0 bg-slate-100">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <StatusIcon status={status.name} />

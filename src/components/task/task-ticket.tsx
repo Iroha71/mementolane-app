@@ -20,12 +20,11 @@ export default function TaskTicket({ task, className }: TaskTicketProps) {
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle className="text-xl">
+        <CardTitle className="text-lg">
           <Link
             to={`/tasks/${task.id}/edit`}
             className="flex items-center gap-2 hover:underline"
           >
-            <Ticket />
             {task.title}
           </Link>
         </CardTitle>
@@ -40,20 +39,22 @@ export default function TaskTicket({ task, className }: TaskTicketProps) {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <p className="flex items-center gap-2 text-base">
-          <Clock className="size-4" />
-          <label>開始日: </label>
-          <span className="font-bold">
-            {task.start_at ? formatWeekDay(task.start_at) : "---"}
-          </span>
+        <p className="flex items-center text-base">
+          <Hourglass className="mr-2 size-4" />
+          {task.start_at ? formatWeekDay(task.start_at) : "---"} →{" "}
+          {task.due_at ? formatWeekDay(task.due_at) : "---"}
         </p>
-        <p className="flex items-center gap-2 text-base">
-          <Hourglass className="size-4" />
-          <label>期限日: </label>
-          <span className="font-bold">
-            {task.due_at ? formatWeekDay(task.due_at) : "---"}
-          </span>
-        </p>
+        <hr className="my-2" />
+        <div className="flex items-center gap-2">
+          <span className="shrink-0">ステータス</span>
+          <select
+            name="status"
+            id="status"
+            className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+          >
+            <option value="plan">予定</option>
+          </select>
+        </div>
       </CardContent>
     </Card>
   );
