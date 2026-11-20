@@ -36,6 +36,7 @@ export default function Swimlane({
           <TaskTicket
             key={task.id}
             task={task}
+            className="mb-2 shadow-md"
             onToggleCompleted={onToggleCompleted}
           />
         ))}

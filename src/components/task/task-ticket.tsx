@@ -12,12 +12,13 @@ import { Link } from "react-router";
 
 interface TaskTicketProps {
   task: Task;
+  className?: string;
   onToggleCompleted: (completed: boolean) => void;
 }
 
-export default function TaskTicket({ task }: TaskTicketProps) {
+export default function TaskTicket({ task, className }: TaskTicketProps) {
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle className="text-xl">
           <Link
