@@ -2,6 +2,17 @@ import { getDb } from "@/lib/db";
 import { Actual } from "@/models/actual.model";
 
 export class ActualRepository {
+  async find(record_at: string): Promise<Omit<Actual, "task_title"> | null> {
+    const db = await getDb();
+
+    const actuals = await db.select<Omit<Actual, "task_title">[]>(
+      "SELECT id, record_at, task_id FROM actuals WHERE record_at = $1",
+      [record_at],
+    );
+
+    return actuals[0] ?? null;
+  }
+
   /** record_at（UTCのISO文字列）が [startAt, endAt) に含まれる実績を取得する */
   async getInDate(startAt: string, endAt: string): Promise<Actual[]> {
     const db = await getDb();
@@ -15,17 +26,26 @@ export class ActualRepository {
     );
   }
 
-  /** 同じ record_at の実績があればタスクを上書きし、なければ登録する */
-  async upsert(recordAt: string, taskId: number): Promise<Actual | null> {
+  /** 同じ record_at の実績があればタスクを上書きし、なければ登録する（複数件をまとめて処理） */
+  async upsertMultiple(
+    inputs: { record_at: string; task_id: number }[],
+  ): Promise<void> {
+    if (inputs.length <= 0) return;
     const db = await getDb();
-    const updatedActuals = await db.select<Actual[]>(
-      "INSERT INTO actuals(record_at, task_id) VALUES($1, $2) \
-        ON CONFLICT(record_at) DO UPDATE SET task_id = excluded.task_id \
-        RETURNING *;",
-      [recordAt, taskId],
+    // 1件につき2つ使うので、2件なら "($1, $2), ($3, $4)" になる
+    const placeholders = inputs
+      .map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`)
+      .join(", ");
+    await db.execute(
+      `INSERT INTO actuals(record_at, task_id) VALUES ${placeholders} \
+        ON CONFLICT(record_at) DO UPDATE SET task_id = excluded.task_id;`,
+      inputs.flatMap((input) => [input.record_at, input.task_id]),
     );
+  }
 
-    return updatedActuals[0] ?? null;
+  async delete(record_at: string): Promise<void> {
+    const db = await getDb();
+    await db.execute("DELETE FROM actuals WHERE record_at = $1", [record_at]);
   }
 }
 

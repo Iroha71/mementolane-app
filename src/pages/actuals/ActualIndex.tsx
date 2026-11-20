@@ -22,9 +22,13 @@ export default function ActualIndex() {
   const {
     selectedTask,
     setSelectedTask,
-    createActualInSlot,
+    drafts,
+    resetDrafts,
     error: createError,
-  } = useCreateActual(fetchActuals);
+    assignTaskToSlot,
+    upsertActuals,
+    deleteActual,
+  } = useCreateActual(fetchActuals, fetchActuals);
   const createErrorMessages = createError
     ? Object.values(createError).flat()
     : [];
@@ -36,7 +40,10 @@ export default function ActualIndex() {
           variant="ghost"
           size="icon"
           aria-label="前日へ"
-          onClick={goToPrevDay}
+          onClick={() => {
+            resetDrafts();
+            goToPrevDay();
+          }}
         >
           <ChevronLeftIcon />
         </Button>
@@ -45,7 +52,10 @@ export default function ActualIndex() {
           variant="ghost"
           size="icon"
           aria-label="翌日へ"
-          onClick={goToNextDay}
+          onClick={() => {
+            resetDrafts();
+            goToNextDay();
+          }}
         >
           <ChevronRightIcon />
         </Button>
@@ -57,6 +67,9 @@ export default function ActualIndex() {
             selectedTaskId={selectedTask?.id ?? null}
             onSelectTask={setSelectedTask}
           />
+          <div className="mt-4 text-center">
+            <Button onClick={upsertActuals}>更新する</Button>
+          </div>
           <div className="mt-4 text-center">
             <Link to="/" className={buttonVariants({ variant: "link" })}>
               ホームへ戻る
@@ -73,8 +86,11 @@ export default function ActualIndex() {
             <ErrorAlert key={index} message={message} />
           ))}
           <ActualTimeline
+            day={targetDay}
+            drafts={drafts}
             actuals={actuals}
-            onUpdateSlot={(slot) => createActualInSlot(targetDay, slot)}
+            onAssignTask={assignTaskToSlot}
+            onDeleteActual={deleteActual}
           />
         </div>
       </div>
