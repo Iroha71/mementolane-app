@@ -9,14 +9,20 @@ import {
 import { CircleCheck, Hourglass } from "lucide-react";
 import { formatWeekDay } from "@/lib/date";
 import { Link } from "react-router";
+import { STATUSES } from "@/consts/constValues";
 
 interface TaskTicketProps {
   task: Task;
   className?: string;
+  onChangedStatus: (id: number, status: string) => void;
   onToggleCompleted: (completed: boolean) => void;
 }
 
-export default function TaskTicket({ task, className }: TaskTicketProps) {
+export default function TaskTicket({
+  task,
+  className,
+  onChangedStatus,
+}: TaskTicketProps) {
   return (
     <Card className={className}>
       <CardHeader>
@@ -48,11 +54,16 @@ export default function TaskTicket({ task, className }: TaskTicketProps) {
         <div className="flex items-center gap-2">
           <span className="shrink-0">ステータス</span>
           <select
+            value={task.status}
+            onChange={(e) => onChangedStatus(task.id, e.target.value)}
             name="status"
-            id="status"
             className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
           >
-            <option value="plan">予定</option>
+            {STATUSES.map((status) => (
+              <option key={status.name} value={status.name}>
+                {status.label}
+              </option>
+            ))}
           </select>
         </div>
       </CardContent>
