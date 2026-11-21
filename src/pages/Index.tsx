@@ -24,11 +24,6 @@ export default function Index() {
         <p>読み込み中</p>
       ) : (
         <>
-          <div className="px-2 pt-2">
-            <Link to="/actuals" className={buttonVariants({ variant: "link" })}>
-              actual
-            </Link>
-          </div>
           {error && <ErrorAlert message={error} />}
           <div className="flex h-auto flex-row gap-4 overflow-x-auto p-2">
             {STATUSES.map((status) => (
