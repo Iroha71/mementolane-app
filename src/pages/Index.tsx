@@ -1,8 +1,6 @@
 import Swimlane from "@/components/task/swimlane";
 import { STATUSES } from "@/consts/constValues";
 import { useTaskList } from "@/hooks/tasks/useTaskList";
-import { Link } from "react-router";
-import { buttonVariants } from "@/components/ui/button";
 import ErrorAlert from "@/components/ErrorAlert";
 import { updateTaskStatusUseCase } from "@/usecases/tasks/updateTaskStatusUseCase";
 

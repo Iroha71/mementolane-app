@@ -20,7 +20,7 @@ function App() {
           <NavigationMenuList className="gap-4">
             <NavigationMenuItem>
               <span className="text-lg">MementoLane</span>{" "}
-              <span className="text-md">v{__APP_VERSION__}</span>
+              <span className="text-base">v{__APP_VERSION__}</span>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink
