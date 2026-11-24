@@ -31,6 +31,7 @@ export async function updateTaskStatusUseCase(
       parsedStatus.data,
       task.start_at,
       task.due_at,
+      task.completed,
     );
 
     return updatedTask;

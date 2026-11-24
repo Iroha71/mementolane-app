@@ -15,13 +15,14 @@ interface TaskTicketProps {
   task: Task;
   className?: string;
   onChangedStatus: (id: number, status: string) => void;
-  onToggleCompleted: (completed: boolean) => void;
+  onToggleCompleted: (task: Task) => void;
 }
 
 export default function TaskTicket({
   task,
   className,
   onChangedStatus,
+  onToggleCompleted,
 }: TaskTicketProps) {
   return (
     <Card className={className}>
@@ -39,6 +40,7 @@ export default function TaskTicket({
             type="button"
             aria-label="完了にする"
             className="cursor-pointer"
+            onClick={() => onToggleCompleted(task)}
           >
             <CircleCheck className="size-5" />
           </button>

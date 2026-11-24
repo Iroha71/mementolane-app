@@ -56,11 +56,12 @@ export class TaskRepository {
     status: string,
     startAt: string | null,
     dueAt: string | null,
+    completed: number,
   ): Promise<Task | null> {
     const db = await getDb();
     const updatedTask = await db.select<Task[]>(
-      "UPDATE tasks SET title = $1, status = $2, start_at = $3, due_at = $4 WHERE id = $5 RETURNING *;",
-      [title, status, startAt, dueAt, id],
+      "UPDATE tasks SET title = $1, status = $2, start_at = $3, due_at = $4, completed = $5 WHERE id = $6 RETURNING *;",
+      [title, status, startAt, dueAt, completed, id],
     );
 
     return updatedTask[0] ?? null;
