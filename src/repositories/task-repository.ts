@@ -56,7 +56,7 @@ export class TaskRepository {
     status: string,
     startAt: string | null,
     dueAt: string | null,
-    completed: number,
+    completed: Task["completed"],
   ): Promise<Task | null> {
     const db = await getDb();
     const updatedTask = await db.select<Task[]>(

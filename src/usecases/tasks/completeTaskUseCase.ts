@@ -12,7 +12,7 @@ export async function completeTaskUseCase(
     .safeParse({ id, completed: isCompleted ? 1 : 0 });
 
   if (!parsedInput.success) {
-    throw new InternalError({ page: ["対象のタスクが見つかりません。"] });
+    throw new InternalError({ page: ["タスクの指定が正しくありません。"] });
   }
 
   try {

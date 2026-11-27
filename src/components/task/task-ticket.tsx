@@ -38,7 +38,7 @@ export default function TaskTicket({
         <CardAction>
           <button
             type="button"
-            aria-label="完了にする"
+            aria-label={task.completed ? "未完了にする" : "完了にする"}
             className="cursor-pointer"
             onClick={() => onToggleCompleted(task)}
           >
