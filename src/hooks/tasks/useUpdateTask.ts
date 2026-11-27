@@ -29,7 +29,7 @@ export function useUpdateTask({ onSuccess }: UpdateTaskOptions) {
       setError(undefined);
       const isCompleted = !task.completed;
       await completeTaskUseCase(task.id, isCompleted);
-      onSuccess?.();
+      await onSuccess?.();
     } catch (err) {
       if (err instanceof InternalError) setError(err.errors);
     }
