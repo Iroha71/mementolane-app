@@ -41,7 +41,7 @@ export default function TaskTicket({
             aria-label={task.completed ? "未完了にする" : "完了にする"}
             className="cursor-pointer"
             onClick={() => onToggleCompleted(task)}
-            aria-pressed={task.completed ? "false" : "true"}
+            aria-pressed={task.completed === 1}
           >
             <CircleCheck className="size-5" />
           </button>
