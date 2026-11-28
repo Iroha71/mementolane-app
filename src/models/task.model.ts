@@ -25,3 +25,9 @@ export const taskInputModel = taskModel.omit({
 });
 
 export type TaskInput = z.input<typeof taskInputModel>;
+
+export const taskUpdateModel = taskModel.omit({
+  created_at: true,
+});
+
+export type TaskUpdate = z.input<typeof taskUpdateModel>;

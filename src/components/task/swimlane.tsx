@@ -15,7 +15,7 @@ import { buttonVariants } from "../ui/button";
 interface SwimlaneProps {
   status: StatusGroup;
   tasks: Task[];
-  onToggleCompleted: (completed: boolean) => void;
+  onToggleCompleted: (task: Task) => void;
   onChangedTaskStatus: (taskId: number, status: string) => void;
 }
 

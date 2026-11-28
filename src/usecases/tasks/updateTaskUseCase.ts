@@ -21,6 +21,7 @@ export async function updateTaskUseCase(
       parsedInput.data.status,
       parsedInput.data.start_at,
       parsedInput.data.due_at,
+      parsedInput.data.completed,
     );
 
     if (updatedTask === null) {

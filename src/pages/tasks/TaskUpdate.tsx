@@ -26,7 +26,11 @@ export default function TaskUpdate() {
 
 function TaskUpdateContent({ id }: { id: number }) {
   const { task, isLoading, error: fetchError } = useGetTask(id);
-  const { submitTask, error: updateError, updatedTask } = useUpdateTask(id);
+  const {
+    submitTask,
+    error: updateError,
+    updatedTask,
+  } = useUpdateTask({ onSuccess: () => {} });
 
   if (isLoading) return <p className="text-center">読み込み中...</p>;
   if (fetchError) {
@@ -58,7 +62,7 @@ function TaskUpdateContent({ id }: { id: number }) {
           completed: currentTask.completed,
         }}
         actualTime={task.actual_time}
-        onSubmit={submitTask}
+        onSubmit={(currentTask) => submitTask(task.id, currentTask)}
         error={updateError}
         notice={
           updateError ? (
