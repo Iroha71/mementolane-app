@@ -19,7 +19,7 @@ export async function completeTaskUseCase(
     const targetTask = await repo.find(parsedInput.data.id);
     if (targetTask === null)
       throw new InternalError({ page: ["対象のタスクが見つかりません。"] });
-    await repo.update(
+    const updatedTask = await repo.update(
       targetTask.id,
       targetTask.title,
       targetTask.status,
@@ -27,6 +27,12 @@ export async function completeTaskUseCase(
       targetTask.due_at,
       parsedInput.data.completed,
     );
+
+    if (updatedTask === null) {
+      throw new InternalError({
+        page: ["タスク状態の更新に失敗しました。もう一度お試しください。"],
+      });
+    }
   } catch (err) {
     if (err instanceof InternalError) throw err;
     else {
